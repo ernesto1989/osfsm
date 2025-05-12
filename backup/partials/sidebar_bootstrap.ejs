@@ -1,0 +1,54 @@
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading"><%=__('base_scenario') %></div>
+                <a class="nav-link" href="<%=home_url%>">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Dashboard
+                </a>
+                <a class="nav-link" href="<%=home_url%>/BASE_CONDITION/nodes">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-bridge-water"></i></div>
+                    <%=__('nodes_menu') %>
+                </a>
+                <a class="nav-link" href="<%=home_url%>">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-faucet"></i></div>
+                    <%=__('flows_menu') %>
+                </a>
+                <a class="nav-link" href="<%=home_url%>">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-faucet"></i></div>
+                    System Consumers
+                </a>
+                <!-- Need an if to iterate over all scenarios-->
+                <div class="sb-sidenav-menu-heading"><%=__('proposed_scenario') %></div>
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapse_pc1" aria-expanded="false" aria-controls="collapse_pc1">
+                    <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                    Condition_01
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapse_pc1" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="layout-static.html"><div class="sb-nav-link-icon"><i class="fa-solid fa-bridge-water"></i></div>Nodes</a>
+                        <a class="nav-link" href="layout-sidenav-light.html"><div class="sb-nav-link-icon"><i class="fa-solid fa-faucet"></i></div>Flows</a>
+                    </nav>
+                </div>
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapse_pc2" aria-expanded="false" aria-controls="collapse_pc2">
+                    <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                    Condition_02
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapse_pc2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="layout-static.html"><div class="sb-nav-link-icon"><i class="fa-solid fa-bridge-water"></i></div>Nodes</a>
+                        <a class="nav-link" href="layout-sidenav-light.html"><div class="sb-nav-link-icon"><i class="fa-solid fa-faucet"></i></div>Flows</a>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            Ernesto Cantú
+        </div>
+    </nav>
+</div>

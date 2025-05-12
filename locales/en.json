@@ -1,0 +1,15 @@
+{
+	"app_name": "OSF Scenario Manager",
+	"welcome_message": "Dashboard",
+	"user_login":"Username",
+	"password_login":"Password",
+	"user_settings":"Settings",
+	"logout":"Log out",
+	"base_scenario":"Official Situation",
+	"proposed_scenario":"Proposed Situation",
+	"nodes_menu":"Nodes",
+	"flows_menu":"Flows",
+	"other_message": "Other",
+	"Lang_title": "Language Selection",
+	"selected_lang_message": "Selected Language"
+}

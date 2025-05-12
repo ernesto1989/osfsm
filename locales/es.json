@@ -1,0 +1,18 @@
+{
+	"title": "Modelo OSF",
+	"welcome_message": "BIENVENIDO - Modelo OSF - Dashboard",
+	"other_message": "Otro",
+	"Lang_title": "Idioma",
+	"selected_lang_message": "Idioma seleccionado",
+	"app_name": "app_name",
+	"user_settings": "user_settings",
+	"logout": "logout",
+	"official_status": "official_status",
+	"nodes_menu": "nodes_menu",
+	"flows_menu": "flows_menu",
+	"base_condition_title": "base_condition_title",
+	"proposed_scenario": "proposed_scenario",
+	"base_scenario": "base_scenario",
+	"user_login": "user_login",
+	"password_login": "password_login"
+}

@@ -1,0 +1,15 @@
+html,
+body{
+    height: 100%;
+}
+
+.container-fluid {
+    height:93%
+}
+
+#contenido {
+    margin:auto;
+    width: 98%;
+    height: 98%;
+    padding: 2px;
+}
