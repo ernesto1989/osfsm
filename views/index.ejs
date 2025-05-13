@@ -27,8 +27,8 @@
                 { type: 'button', id: 'new', text: 'Create', icon: 'fa fa-pencil' },
                 { type: 'button', id: 'delete', text: 'Delete', icon: 'fa fa-trash'},
                 { type: 'spacer' },
-                { type: 'menu', id: 'user', text: 'Ernesto', icon: 'fa fa-user', items:[
-                    { type: 'button', id: 'region', text: '<%=region_name%>', icon: 'fa fa-circle-info' },
+                { type: 'menu', id: 'user', text: '<%=user_info.name%>', icon: 'fa fa-user', items:[
+                    { type: 'button', id: 'region', text: '<%=user_info.region_name%>', icon: 'fa fa-circle-info' },
                     //{ type: 'button', id: 'pref', text: 'My Preferences', icon: 'fa fa-user' },
                     { type: 'button', id: 'sout', text: 'Sign Out', icon: 'fa fa-user-slash' }
                 ] 
@@ -53,7 +53,7 @@
                 }
                 if(selectedOp === 'user:region'){
                     //preferences
-                    console.log("My region is: <%=region_name%>");
+                    console.log("My region is: <%=user_info.region_name%>");
                 }
                 if(selectedOp === 'user:sout'){
                     window.location.href = '<%=home_url%>/logout';
@@ -68,7 +68,7 @@
             style:'height:100%;',
             nodes: [
                 <%for(let i = 0; i< scenarios.length;i++) {%>
-                { id: '<%=scenarios[i].scenario_id%>', text: '<%=scenarios[i].scenario_name%>',  expanded: false,
+                { id: '<%=scenarios[i].scenario_id%>', text: '<%=scenarios[i].description%>',  expanded: false,
                     nodes: [
                         { id: '<%=scenarios[i].scenario_id%>/dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
                         { id: '<%=scenarios[i].scenario_id%>/nodes', text: 'Internal Nodes', icon: 'fa-solid fa-bridge-water' },
@@ -106,7 +106,7 @@
             <div class="col-sm-10 col-md-10" id="main-content" style="height: 100%;position:relative;left:10px;">
                 <main>
                     <div class="container-fluid px-4">
-                        <h4 class="mt-4"><%=region_name %> - <%= __('welcome_message') %></h4>
+                        <h4 class="mt-4"><%=user_info.region_name%> - <%= __('welcome_message') %></h4>
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-white bg-danger mb-4">

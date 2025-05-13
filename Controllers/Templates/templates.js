@@ -13,6 +13,31 @@
 const { __ } = require("i18n");
 const constants = require("../../constants")
 
+const userServices = require("../../Service/usersService")
+const catalogsService = require("../../Service/catalogsService")
+const scenariosService = require("../../Service/scenarioService")
+
+//Catalogs lists
+let capacity_units = []
+let time_units = []
+let flowTypes = [];
+
+/**
+ * Method that initializes the capacity_units, time_units and types lists.
+ */
+async function loadLists(){
+    flowTypes = await catalogsService.getFlowTypes();
+    cu = await catalogsService.getCapacityUnits();
+    tu = await catalogsService.getTimeUnits();
+
+    for(i=0;i<cu.length;i++)
+        capacity_units.push(cu[i].unit_name);
+
+    for(i=0;i<tu.length;i++)
+        time_units.push(tu[i].unit_name);
+}
+
+loadLists();
 
 /**
  * Metod that shows the login view.
@@ -20,7 +45,10 @@ const constants = require("../../constants")
  * @param {Object} res Server Response
  */
 async function getLogin(req,res){
-    res.render('login');
+    let template_engine_object = {
+        home_url:constants.contextURL
+    };
+    res.render('login',template_engine_object);
 }
 
 
@@ -38,12 +66,10 @@ async function postLogin(req,res){
     // Authenticate user
     if (user) {
         req.session.isLoggedIn = true;
-
         user.role = { id: user.role_id, name: user.role_name };
-        if(user.role_id == 2){
+        if(user.role_id == 2 ){
             user.region = { id: user.region_id, name: user.region_name };
         }
-
         req.session.user = user;
 
         res.redirect(constants.contextURL);
@@ -92,13 +118,25 @@ async function homePage(req,res){
         return res.redirect(constants.contextURL+"/login");
     }
 
+    user = req.session.user;
+    let session =  {
+        username: user.username,
+        name: user.name,
+        role_id: user.role.id,
+        role: user.role.name
+    };
+
+    let scenariosList = [];
+    if(user.role_id == 2 || user.role_id == 3){
+        session.region_id = user.region_id;
+        session.region_name = user.region_name;
+        scenariosList = await scenariosService.getScenariosList(user.region_id);
+    }
+
     let template_engine_object = {
-        region_name:'Demo City',
         home_url:constants.contextURL,
-        scenarios:[
-            {scenario_id:"BASE_CONDITION",scenario_name:"Official Condition"},
-            {scenario_id:"scenario_01",scenario_name:"Proposed Condition 01"},
-        ]
+        scenarios: scenariosList.getRows(),
+        user_info:session
     };
     res.render('index',template_engine_object);
 }

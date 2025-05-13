@@ -20,6 +20,7 @@ const router = express.Router();
 /*TEMPLATES routes */
 router.get(constants.indexURL, templates.index);
 router.get(constants.contextURL+'/login', templates.getLogin);
+router.post(constants.contextURL+'/login', templates.postLogin);
 router.get(constants.contextURL+'/logout', templates.logout);
 router.get(constants.contextURL, templates.homePage);
 router.get(constants.contextURL + '/:scenarioId/nodes', templates.scenarioNodes);
