@@ -22,7 +22,7 @@
             box: '#toolbar',
             name: 'toolbar',
             items: [
-                { type: 'button', id: 'home', text: 'Water Flow Scenario Management', icon: 'fa fa-house' },
+                { type: 'button', id: 'home', text: '<%= __('app_name') %>', icon: 'fa fa-house' },
                 { type: 'break' },
                 { type: 'button', id: 'new', text: 'Create', icon: 'fa fa-pencil' },
                 { type: 'button', id: 'delete', text: 'Delete', icon: 'fa fa-trash'},
@@ -73,7 +73,7 @@
                         { id: '<%=scenarios[i].scenario_id%>/dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
                         { id: '<%=scenarios[i].scenario_id%>/nodes', text: 'Internal Nodes', icon: 'fa-solid fa-bridge-water' },
                         { id: '<%=scenarios[i].scenario_id%>/flows', text: 'Internal Flows', icon: 'fa-solid fa-faucet' },
-                        { id: '<%=scenarios[i].scenario_id%>/consumers', text: 'Region Consumers', icon: 'fa-solid fa-faucet' }   
+                        { id: '<%=scenarios[i].scenario_id%>/consumers', text: 'Region Consumers', icon: 'fa-solid fa-hand-holding-droplet' }   
                     ]
                 },
                 <%}%>
@@ -87,7 +87,12 @@
                     alert("Resumen Escenario")
                 }
                 else{
-                    alert("Catálogo")
+                    if(split_res[1] === 'nodes'){
+                        //alert(split_res[0])
+                        window.open('<%=home_url%>/'+ split_res[0] + '/nodes','nodes_'+ split_res[0],'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=950,height=550');
+                    }else{
+                        return;
+                    }
                 }
                 console.log(id)
             }

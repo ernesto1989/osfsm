@@ -11,20 +11,23 @@
  * 07/10/2024
  */
 const express = require('express');
-const templates = require('./Templates/templates');
+const loginControllers = require('./Templates/loginController');
+const userControllers = require('./Templates/userController');
+const homeControllers = require('./Templates/homeController');
+const nodesControllers = require('./Templates/nodesController');
 const constants = require("../constants");
 const nodesApi = require("./API/nodesRest");
 
 const router = express.Router();
 
 /*TEMPLATES routes */
-router.get(constants.indexURL, templates.index);
-router.get(constants.contextURL+'/login', templates.getLogin);
-router.post(constants.contextURL+'/login', templates.postLogin);
-router.get(constants.contextURL+'/logout', templates.logout);
-router.get(constants.contextURL, templates.homePage);
-router.get(constants.contextURL + '/:scenarioId/nodes', templates.scenarioNodes);
-router.get(constants.contextURL+'/lang', templates.lang);
+router.get(constants.contextURL+'/login', loginControllers.getLogin);
+router.post(constants.contextURL+'/login', loginControllers.postLogin);
+router.get(constants.contextURL+'/logout', loginControllers.logout);
+router.get(constants.indexURL, homeControllers.index);
+router.get(constants.contextURL, homeControllers.homePage);
+router.get(constants.contextURL + '/:scenarioId/nodes', nodesControllers.scenarioNodes);
+router.get(constants.contextURL+'/lang', userControllers.lang);
 
 
 
