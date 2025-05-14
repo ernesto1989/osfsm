@@ -13,7 +13,7 @@ let flow_types = [];
  * @param {*} req user's request.
  */
 async function getSessionInfo(req){
-    user = req.session.user;
+    const user = req.session.user;
     let session =  {
         username: user.username,
         name: user.name,

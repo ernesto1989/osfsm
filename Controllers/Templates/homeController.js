@@ -26,16 +26,14 @@ async function index(req,res){
  */
 async function homePage(req,res){
     const sessionData = req.session;
-
     if (!sessionData.isLoggedIn) {
         return res.redirect(constants.contextURL+"/login");
     }
-
-    session = await utils.getSessionInfo(req);
+    let session = await utils.getSessionInfo(req);
 
     let scenariosList = [];
-    if(user.role_id == 2 || user.role_id == 3){
-        scenariosList = await scenariosService.getScenariosList(user.region_id);
+    if(session.role_id == 2 || session.role_id == 3){
+        scenariosList = await scenariosService.getScenariosList(session.region_id);
     }
 
     let template_engine_object = {

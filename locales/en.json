@@ -9,6 +9,8 @@
 	"proposed_scenario":"Proposed Situation",
 	"nodes_menu":"Nodes",
 	"flows_menu":"Flows",
+	"cap_units_msg": "Volume in: ",
+	"time_units_msg": "Time in: ",
 	"other_message": "Other",
 	"Lang_title": "Language Selection",
 	"selected_lang_message": "Selected Language"

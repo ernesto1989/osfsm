@@ -14,5 +14,6 @@
 	"proposed_scenario": "proposed_scenario",
 	"base_scenario": "base_scenario",
 	"user_login": "user_login",
-	"password_login": "password_login"
+	"password_login": "password_login",
+	"cap_units_msg": "cap_units_msg"
 }

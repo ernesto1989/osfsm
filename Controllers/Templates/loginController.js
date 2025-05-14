@@ -32,7 +32,7 @@ async function getLogin(req,res){
 async function postLogin(req,res){
     const { username, password } = req.body;
 
-    user = await userServices.isValidUser(username, password);
+    const user = await userServices.isValidUser(username, password);
 
     // Authenticate user
     if (user) {

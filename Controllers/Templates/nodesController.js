@@ -4,6 +4,7 @@
 const { __ } = require("i18n");
 const constants = require("../../constants");
 const scenariosService = require("../../Service/scenarioService")
+const catalogsService = require("../../Service/catalogsService")
 const utils = require("./utilities")
 
 
@@ -19,18 +20,18 @@ async function scenarioNodes(req,res){
     if (!sessionData.isLoggedIn) {
         return res.redirect(constants.contextURL+"/login");
     }
-
-    session = await utils.getSessionInfo(req);
-    let template_engine_object;
+    let session = await utils.getSessionInfo(req);
     let scenarioId = req.params.scenarioId;
-    if(user.role_id == 2 || user.role_id == 3){
-        template_engine_object = {
-            region_id:user.region_id,
-            region_name:user.region_name,
-            home_url:constants.contextURL,
-            scenario_id: scenarioId
-        };
-    }
+    let capacityUnits = (await scenariosService.getScenarioCapacityUnits(session.region_id,scenarioId)).getRows()[0]
+    let containerTypes = (await catalogsService.getContainerTypes()).getRows();
+    let template_engine_object = {
+        region_id:session.region_id,
+        region_name:session.region_name,
+        home_url:constants.contextURL,
+        scenario_id: scenarioId,
+        capacity_units:capacityUnits.unit_value,
+        container_types: containerTypes
+    };
         
     res.render('nodes',template_engine_object);
 }

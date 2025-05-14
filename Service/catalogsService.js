@@ -2,6 +2,7 @@ const dataSource = require('../Datasource/MySQLMngr');
 
 const getTypesQuery = "SELECT id as type_id,name as type FROM x05_flow_types"
 const getUnitsQuery = "SELECT unit_value FROM x01_units WHERE unit_type = ?";
+const getContainerTypesQuery = "SELECT id,type FROM x03_container_types";
 
 /**
  * Method that extracts from the database the possible flow types
@@ -47,6 +48,21 @@ async function getTimeUnits(){
     }
 }
 
+/**
+ * Method that extracts from the database the possible container nodes the the system manages.
+ * @returns list of time units
+ */
+async function getContainerTypes(){
+    try{
+        let query = getContainerTypesQuery;
+        qResult = await dataSource.getData(query);
+        return qResult;
+    }catch(err){
+        return new dataSource.QueryResult(false,null,0,0,err);
+    }
+}
+
+
 module.exports = {
-    getFlowTypes,getCapacityUnits,getTimeUnits
+    getFlowTypes,getCapacityUnits,getTimeUnits,getContainerTypes
 }
