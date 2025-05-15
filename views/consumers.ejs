@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= __('nodes_menu') %> - <%=scenario_id%> </title>
+    <title><%= __('consumers_menu') %> - <%=scenario_id%> </title>
     <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -38,7 +38,7 @@
         let scenarioId = '<%=scenario_id%>';
 
         $("document").ready(function(){
-            $.get("<%=home_url%>/api/getNodes/<%=scenario_id%>", function(data, status){
+            $.get("<%=home_url%>/api/getConsumers/<%=scenario_id%>", function(data, status){
                 let recs = data.records;
                 grid.records = recs;
                 grid.refresh();
@@ -49,11 +49,10 @@
         function getNewEmptyRecord(){            
             let record = {
                 node_id: 'N..',
-                container_type: {id:'<%=container_types[0].id%>',text:'<%=container_types[0].type%>'},
+                consumer_type: {id:'<%=consumer_types[0].id%>',text:'<%=consumer_types[0].type%>'},
                 description: '',
-                min_capacity:0.0,
-                current_vol:0.0,
-                max_capacity:0.0
+                supply_requirement:0.0,
+                supply_policy:0.0
             }
 
             return record;
@@ -66,11 +65,11 @@
             let record = {
                 id: rec.recid,
                 node_id: rec.node_id,
-                container_type: {id:rec.container_type_id,text:rec.container_type},
+                consumer_type: {id:rec.consumer_type_id,text:rec.consumer_type},
                 description: rec.description,
-                min_capacity:rec.min_capacity,
+                supply_requirement:rec.supply_requirement,
                 current_vol:rec.current_vol,
-                max_capacity:rec.max_capacity
+                supply_policy:rec.supply_policy
             }
 
             return record;
@@ -82,11 +81,10 @@
                 new_scenario_id : '<%=scenario_id%>',
                 new_id : record.id,
                 new_node_id : record.node_id,
-                new_container_type: record.container_type,
+                new_consumer_type: record.consumer_type,
                 new_description: record.description,
-                new_min_capacity:record.min_capacity,
-                new_current_vol: record.current_vol,
-                new_max_capacity:record.max_capacity
+                new_supply_requirement:record.supply_requirement,
+                new_supply_policy: record.supply_policy
             };
             w2ui.nodesForm.record = rec;
             w2ui.nodesForm.refresh();
@@ -109,11 +107,11 @@
                         html: { label: 'Node Id', 
                         attr: 'style="width: 100%;"placeholder="Nodes Id" ' }
                     },
-                    { field: 'new_container_type', type: 'list',
-                        html: { label: '<%= __("container_type_title") %>',attr: 'style="width: 100%"' },
+                    { field: 'new_consumer_type', type: 'list',
+                        html: { label: '<%= __("consumer_type_title") %>',attr: 'style="width: 100%"' },
                         options: { items: [
-                            <% for(let i =0;i<container_types.length;i++){%>
-                            {id:<%=container_types[i].id%>,text:'<%=container_types[i].type%>'}, 
+                            <% for(let i =0;i<consumer_types.length;i++){%>
+                            {id:<%=consumer_types[i].id%>,text:'<%=consumer_types[i].type%>'}, 
                             <%}%>
                         ]},
                     },
@@ -121,16 +119,12 @@
                         html: { label: '<%= __("description_title") %>', 
                         attr: 'style="width: 100%;"placeholder="About this Node" ' }
                     },
-                    { field: 'new_min_capacity', type: 'float', required: true, editable:true, 
-                        html: { label: '<%= __("min_capacity_title") %>', 
+                    { field: 'new_supply_requirement', type: 'float', required: true, editable:true, 
+                        html: { label: '<%= __("supply_requirement_title") %>', 
                         attr: 'style="width: 100%";' }
                     },
-                    { field: 'new_current_vol', type: 'float', required: true, editable:true, 
-                        html: { label: '<%= __("current_vol_title") %>', attr: 'style="width: 100%";' }
-                    },
-                    { field: 'new_max_capacity', type: 'float', required: true, editable:true, 
-                        html: { label: '<%= __("max_capacity_title") %>', 
-                        attr: 'style="width: 100%";' }
+                    { field: 'new_supply_policy', type: 'float', required: true, editable:true, 
+                        html: { label: '<%= __("supply_policy_title") %>', attr: 'style="width: 100%";' }
                     }
                 ],
                 actions: {
@@ -143,51 +137,35 @@
                     Save() { 
                         this.validate(); 
 
-                        let curr_min = nodesForm.record.new_min_capacity;
-                        let curr_vol = nodesForm.record.new_current_vol;
-                        let curr_max = nodesForm.record.new_max_capacity;
-                        //max_capacity_title
-                        if(curr_min <= 0){
-                            w2alert("<%= __('min_capacity_title') %> <%= __('zero_val_err') %>");
-                            return;
-                        }
-                        
-                        if(curr_vol <= 0){
-                            w2alert("<%= __('current_vol_title') %> <%= __('zero_val_err') %>");
+                        let supply_requirement = nodesForm.record.new_supply_requirement;
+                        let supply_policy = nodesForm.record.new_supply_policy;
+
+                        if(supply_requirement <= 0){
+                            w2alert("<%= __('supply_requirement_title') %> <%= __('zero_val_err') %>");
                             return;
                         }
 
-                        if(curr_max <= 0){
-                            w2alert("<%= __('max_capacity_title') %> <%= __('zero_val_err') %>");
+                        if(supply_policy < 0 || supply_policy>100){
+                            w2alert("<%= __('supply_policy_title') %> <%= __('percentage_val_err') %>");
                             return;
                         }
-
-                        if(curr_min > curr_vol){
-                            w2alert("<%= __('min_capacity_err') %>");
-                            return;
-                        }
-
-                        if(curr_vol > curr_max){
-                            w2alert("<%= __('current_vol_err') %>");
-                            return;
-                        }
+                        //validate supply policy between 0 and 100.
 
                         let node = {
                             new_record:!isEdit,
                             scenario_id:nodesForm.record.new_scenario_id,
                             id:nodesForm.record.new_id,
                             node_id:nodesForm.record.new_node_id,
-                            container_type: nodesForm.record.new_container_type.id,
+                            consumer_type: nodesForm.record.new_consumer_type.id,
                             description:nodesForm.record.new_description,
-                            min_capacity: curr_min ,
-                            current_vol: curr_vol,
-                            max_capacity: curr_max
+                            supply_requirement: nodesForm.record.new_supply_requirement ,
+                            supply_policy: nodesForm.record.new_supply_policy
                         }
 
                         //https://stackoverflow.com/questions/2845459/jquery-how-to-make-post-use-contenttype-application-json
                         //proper way to ajax
                         $.ajax({
-                            url:'<%=home_url%>/api/saveNode', 
+                            url:'<%=home_url%>/api/saveConsumer', 
                             type:'POST',
                             data: JSON.stringify(node), 
                             dataType:"json",
@@ -204,7 +182,7 @@
             });
 
             w2popup.open({
-                title   : '<%= __("nodes_form_title") %>',
+                title   : '<%= __("consumers_form_title") %>',
                 body    : '<div id="nodesForm" style="width: 100%; height: 100%;"></div>',
                 style   : 'padding: 15px 0px 0px 0px',
                 width   : 400,
@@ -213,7 +191,7 @@
             })
             .then((event) => {
                 w2ui.nodesForm.render('#nodesForm');
-                if(isEdit) {
+                if(isEdit){
                     w2ui.nodesForm.disable('new_node_id');
                     setForm(getSelectedRecord());
                 }else{
@@ -227,7 +205,7 @@
         let grid = new w2grid({
             name: 'grid',
             box: '#content-grid',
-            header  : '<%=region_name%> <%= __("nodes_menu") %> - <%=scenario_id%> - <%= __("cap_units_msg") %> <%=capacity_units%>',
+            header  : '<%=region_name%> <%= __("consumers_menu") %> - <%=scenario_id%> - <%= __("cap_units_msg") %> <%=capacity_units%>',
             show: {
                 header:true,
                 toolbar: true,
@@ -239,20 +217,16 @@
             },
             multiSearch: true,
             searches: [
-                { field: 'node_id', label: '<%= __("nodes_form_title") %>', type: 'text' },
-                { field: 'current_vol', label: '<%= __("current_vol_title") %>', type: 'float' },
-                { field: 'min_capacity', label: '<%= __("min_capacity_title") %>', type: 'float' },
-                { field: 'max_capacity', label: '<%= __("max_capacity_title") %>', type: 'float' },
+                { field: 'node_id', label: '<%= __("consumers_form_title") %>', type: 'text' },
             ],
             columns: [
                 { field: 'recid', text: 'Id', hidden: true },
                 { field: 'node_id', text: '<%= __("nodes_form_title") %>',sortable:true,size:'10%' },
-                { field: 'container_type_id', text: 'Container_id', hidden: true },
-                { field: 'container_type', text: '<%= __("container_type_title") %>',sortable:true,size:'10%' },
+                { field: 'consumer_type_id', text: 'consumer_id', hidden: true },
+                { field: 'consumer_type', text: '<%= __("consumer_type_title") %>',sortable:true,size:'10%' },
                 { field: 'description', text: '<%= __("description_title") %>', size:'35%' },
-                { field: 'min_capacity', text: '<%= __("min_capacity_title") %> (<%=capacity_units%>)',sortable:true,size:'15%',render:'float:02' },
-                { field: 'current_vol', text: '<%= __("current_vol_title") %> (<%=capacity_units%>)',sortable:true,size:'15%',render:'float:02'},
-                { field: 'max_capacity', text: '<%= __("max_capacity_title") %> (<%=capacity_units%>)',sortable:true, size:'15%',render:'float:02'},
+                { field: 'supply_requirement', text: '<%= __("supply_requirement_title") %> (<%=capacity_units%>)',sortable:true,size:'15%',render:'float:02' },
+                { field: 'supply_policy', text: '<%= __("supply_policy_title") %>',sortable:true,size:'15%',render:'float:02'},
                 { field: 'Lat', text: 'Lat',hidden:true},
                 { field: 'Long', text: 'Long',hidden:true}
             ],
@@ -286,8 +260,8 @@
                 
 
                 w2confirm({
-                    msg: '<%= __("delete_node_msg") %> ',
-                    title: '<%= __("delete_node_title") %>',
+                    msg: '<%= __("delete_consumer_msg") %> ',
+                    title: '<%= __("delete_consumer_title") %>',
                     width: 450,        // width of the dialog
                     height: 220,       // height of the dialog
                     btn_yes: {
@@ -304,7 +278,7 @@
                     },
                     callBack: function(answer){
                         if(answer === '<%= __("yes") %>'){
-                            $.post('<%=home_url%>/api/deleteNode', node, function(respuesta){
+                            $.post('<%=home_url%>/api/deleteConsumer', node, function(respuesta){
                                 if(respuesta)
                                     window.location.reload();
                                 else

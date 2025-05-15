@@ -15,6 +15,7 @@ const loginControllers = require('./Templates/loginController');
 const userControllers = require('./Templates/userController');
 const homeControllers = require('./Templates/homeController');
 const nodesControllers = require('./Templates/nodesController');
+const consumersControllers = require('./Templates/consumersController');
 const constants = require("../constants");
 const nodesApi = require("./API/nodesRest");
 const consumersRest = require("./API/consumersRest");
@@ -28,6 +29,7 @@ router.get(constants.contextURL+'/logout', loginControllers.logout);
 router.get(constants.indexURL, homeControllers.index);
 router.get(constants.contextURL, homeControllers.homePage);
 router.get(constants.contextURL + '/:scenarioId/nodes', nodesControllers.scenarioNodes);
+router.get(constants.contextURL + '/:scenarioId/consumers', consumersControllers.scenarioConsumers);
 router.get(constants.contextURL+'/lang', userControllers.lang);
 
 

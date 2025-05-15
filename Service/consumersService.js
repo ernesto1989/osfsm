@@ -55,7 +55,7 @@ async function insertConsumer(node,region_id){
             VALUES (?,?,?,?,?,?,?,?)
         `;
         
-        let params =[node.scenario_id,region_id,node.node_id,3,node.description,node.container_type, node.supply_requirement, node.supply_policy]; // node_type = 2 for consumer or internal nodes
+        let params =[node.scenario_id,region_id,node.node_id,3,node.description,node.consumer_type, node.supply_requirement, node.supply_policy]; // node_type = 2 for consumer or internal nodes
         let qResult = await dataSource.insertData(insertA01C,params);
         return qResult;        
     }catch(err){

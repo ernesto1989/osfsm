@@ -1,8 +1,12 @@
+/**
+ * File that holds all the possible catalog interactions required by the system.
+ */
 const dataSource = require('../Datasource/MySQLMngr');
 
 const getTypesQuery = "SELECT id as type_id,name as type FROM x05_flow_types"
 const getUnitsQuery = "SELECT unit_value FROM x01_units WHERE unit_type = ?";
 const getContainerTypesQuery = "SELECT id,type FROM x03_container_types";
+const getConsumerTypesQuery = "SELECT id,type FROM x04_consumer_types";
 
 /**
  * Method that extracts from the database the possible flow types
@@ -50,7 +54,7 @@ async function getTimeUnits(){
 
 /**
  * Method that extracts from the database the possible container nodes the the system manages.
- * @returns list of time units
+ * @returns list of container types
  */
 async function getContainerTypes(){
     try{
@@ -62,7 +66,21 @@ async function getContainerTypes(){
     }
 }
 
+/**
+ * Method that extracts from the database the possible consumer nodes the the system manages.
+ * @returns list of consumer types
+ */
+async function getConsumerTypes(){
+    try{
+        let query = getConsumerTypesQuery;
+        qResult = await dataSource.getData(query);
+        return qResult;
+    }catch(err){
+        return new dataSource.QueryResult(false,null,0,0,err);
+    }
+}
+
 
 module.exports = {
-    getFlowTypes,getCapacityUnits,getTimeUnits,getContainerTypes
+    getFlowTypes,getCapacityUnits,getTimeUnits,getContainerTypes,getConsumerTypes
 }

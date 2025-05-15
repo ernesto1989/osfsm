@@ -26,5 +26,13 @@
 	"other_message": "Other",
 	"Lang_title": "Language Selection",
 	"selected_lang_message": "Selected Language",
-	"container_type_title": "Container Type"
+	"container_type_title": "Container Type",
+	"consumer_type_title": "Consumer Type",
+	"supply_requirement_title": "Supply Requirement",
+	"supply_policy_title": "Supply Policy(%)",
+	"consumers_form_title": "Region Consumers",
+	"delete_consumer_msg": "Do you want to delete this Consumer?",
+	"delete_consumer_title": "Delete consumer",
+	"zero_val_err": "Should greater than zero",
+	"percentage_val_err": "Should be between 0 and 100"
 }

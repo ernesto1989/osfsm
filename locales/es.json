@@ -20,11 +20,19 @@
 	"no": "no",
 	"current_vol_err": "El volumen actua no puede ser mayor a la capacidad máxima.",
 	"flows_menu": "Flujos",
+	"consumers_menu": "Consumidores",
 	"cap_units_msg": "Volumen en: ",
 	"time_units_msg": "Tiempo en: ",
 	"other_message": "Otro",
 	"Lang_title": "Idioma seleccionado:",
 	"selected_lang_message": "Idioma seleccionado",
 	"container_type_title": "Tipo de Contenedor",
-	"consumers_menu": "Consumidores"
+	"consumer_type_title": "Tipo de Consumidor",
+	"supply_requirement_title": "Demanda Requerida",
+	"supply_policy_title": "Política de Demanda(%)",
+	"consumers_form_title": "Consumidores",
+	"delete_consumer_msg": "Quieres eliminar este consumidor?",
+	"delete_consumer_title": "Eliminar consumidor",
+	"zero_val_err": "Debe ser mayor a Cero",
+	"percentage_val_err": "Debe ser un valor entre 0 y 100"
 }
