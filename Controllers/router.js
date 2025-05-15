@@ -17,6 +17,7 @@ const homeControllers = require('./Templates/homeController');
 const nodesControllers = require('./Templates/nodesController');
 const constants = require("../constants");
 const nodesApi = require("./API/nodesRest");
+const consumersRest = require("./API/consumersRest");
 
 const router = express.Router();
 
@@ -35,5 +36,10 @@ router.get(constants.contextURL+'/lang', userControllers.lang);
 router.get(constants.contextURL + constants.apiURL + "/getNodes/:scenarioId",nodesApi.getScenarioNodes);
 router.post(constants.contextURL + constants.apiURL + "/saveNode",nodesApi.saveNode);
 router.post(constants.contextURL + constants.apiURL + "/deleteNode",nodesApi.deleteNode);
+
+/*Consumer nodes API routes */
+router.get(constants.contextURL + constants.apiURL + "/getConsumers/:scenarioId",consumersRest.getScenarioNodes);
+router.post(constants.contextURL + constants.apiURL + "/saveConsumer",consumersRest.saveNode);
+router.post(constants.contextURL + constants.apiURL + "/deleteConsumer",consumersRest.deleteNode);
 
 module.exports = router;

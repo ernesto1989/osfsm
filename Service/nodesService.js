@@ -1,8 +1,5 @@
 /**
- * Method that holds every required service for node's management.
- * 1. Generator Nodes 
- * 2. Container Nodes
- * 3. Consumer Nodes
+ * Method that holds every required service for node's management. Container Nodes.
  */
 const dataSource = require('../Datasource/MySQLMngr');
 
