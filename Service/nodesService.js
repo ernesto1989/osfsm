@@ -6,7 +6,7 @@
  */
 const dataSource = require('../Datasource/MySQLMngr');
 
-const getInternalNodesQuery = 
+const getNodesQuery = 
 `
     select 
         a01.id as recid, -- just for W2UI
@@ -21,7 +21,7 @@ const getInternalNodesQuery =
         a01.min_capacity,
         a01.Lat,
         a01.\`Long\` 
-    from a01_nodes a01 
+    from a01b_container_nodes a01 
     join x02_node_types x02 on x02.id = a01.node_type 
     join x03_container_types x03 on x03.id = a01.container_type 
     where a01.scenario_id = ? and a01.region_id = ?
@@ -35,9 +35,9 @@ const getInternalNodesQuery =
  * @param {*} scenarioId the scenario id
  * @returns the list of nodes in the scenario.
  */
-async function getInternalNodes(scenarioId,region_id){
+async function getNodes(scenarioId,region_id){
     try{
-        let query = getInternalNodesQuery;
+        let query = getNodesQuery;
         let params = [scenarioId,region_id]
         qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
@@ -56,7 +56,7 @@ async function insertNode(node,region_id){
     try{
         let insertA01 = 
         `
-            INSERT INTO a01_nodes(scenario_id, region_id, node_id, node_type, description,container_type, max_capacity, current_vol, min_capacity)
+            INSERT INTO a01b_container_nodes(scenario_id, region_id, node_id, node_type, description,container_type, max_capacity, current_vol, min_capacity)
             VALUES (?,?,?,?,?,?,?,?,?)
         `;
         
@@ -78,7 +78,7 @@ async function updateNode(node,region_id){
     try{
         let query = 
         `
-            UPDATE a01_nodes
+            UPDATE a01b_container_nodes
             SET description=?, container_type=?, max_capacity=?, current_vol=?, min_capacity=?
             WHERE scenario_id = ? and region_id = ? and node_id = ?;
         `;
@@ -98,7 +98,7 @@ async function updateNode(node,region_id){
  */
 async function deleteNode(node,region_id){
     try{
-        let query = 'delete from a01_nodes where scenario_id = ? and region_id = ? and node_id = ?';
+        let query = 'delete from a01b_container_nodes where scenario_id = ? and region_id = ? and node_id = ?';
         let params = [node.scenario_id,region_id,node.node_id]
         qResult = await dataSource.updateData(query,params);
         return qResult;
@@ -108,7 +108,7 @@ async function deleteNode(node,region_id){
 }
 
 module.exports = {
-    getInternalNodes,
+    getNodes,
     insertNode,
     updateNode,
     deleteNode

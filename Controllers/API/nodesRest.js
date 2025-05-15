@@ -1,4 +1,4 @@
-const nodesService = require("../../Service/internalNodesService")
+const nodesService = require("../../Service/nodesService")
 const utilities = require("../Templates/utilities")
 
 /**
@@ -7,7 +7,7 @@ const utilities = require("../Templates/utilities")
  * @param {Object} req the request object
  * @param {Object} res the response object
  */
-async function getScenarioInternalNodes(req,res){
+async function getScenarioNodes(req,res){
     try{    
         if (!req.session.isLoggedIn) {
             let jsonError = {
@@ -21,7 +21,7 @@ async function getScenarioInternalNodes(req,res){
         let session = await utilities.getSessionInfo(req);
         let scenarioId = req.params.scenarioId;
         let regionId = session.region_id;
-        let result = await nodesService.getInternalNodes(scenarioId,regionId);
+        let result = await nodesService.getNodes(scenarioId,regionId);
         let scenarioNodes = result.getRows();
         res.status(200);
         res.json({
@@ -144,5 +144,5 @@ async function deleteNode(req,res){
 }
 
 module.exports = {
-    getScenarioInternalNodes,saveNode,deleteNode
+    getScenarioNodes,saveNode,deleteNode
 };

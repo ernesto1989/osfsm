@@ -16,7 +16,7 @@ const userControllers = require('./Templates/userController');
 const homeControllers = require('./Templates/homeController');
 const nodesControllers = require('./Templates/nodesController');
 const constants = require("../constants");
-const nodesApi = require("./API/internalNodesRest");
+const nodesApi = require("./API/nodesRest");
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get(constants.contextURL+'/lang', userControllers.lang);
 
 
 /*Container nodes API routes */
-router.get(constants.contextURL + constants.apiURL + "/getNodes/:scenarioId",nodesApi.getScenarioInternalNodes);
+router.get(constants.contextURL + constants.apiURL + "/getNodes/:scenarioId",nodesApi.getScenarioNodes);
 router.post(constants.contextURL + constants.apiURL + "/saveNode",nodesApi.saveNode);
 router.post(constants.contextURL + constants.apiURL + "/deleteNode",nodesApi.deleteNode);
 
