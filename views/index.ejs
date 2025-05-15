@@ -71,9 +71,9 @@
                 { id: '<%=scenarios[i].scenario_id%>', text: '<%=scenarios[i].description%>',  expanded: false,
                     nodes: [
                         { id: '<%=scenarios[i].scenario_id%>/dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
-                        { id: '<%=scenarios[i].scenario_id%>/nodes', text: 'Internal Nodes', icon: 'fa-solid fa-bridge-water' },
-                        { id: '<%=scenarios[i].scenario_id%>/flows', text: 'Internal Flows', icon: 'fa-solid fa-faucet' },
-                        { id: '<%=scenarios[i].scenario_id%>/consumers', text: 'Region Consumers', icon: 'fa-solid fa-hand-holding-droplet' }   
+                        { id: '<%=scenarios[i].scenario_id%>/nodes', text: '<%= __('nodes_menu') %>', icon: 'fa-solid fa-bridge-water' },
+                        { id: '<%=scenarios[i].scenario_id%>/flows', text: '<%= __('flows_menu') %>', icon: 'fa-solid fa-faucet' },
+                        { id: '<%=scenarios[i].scenario_id%>/consumers', text: '<%= __('consumers_menu') %>', icon: 'fa-solid fa-hand-holding-droplet' }   
                     ]
                 },
                 <%}%>

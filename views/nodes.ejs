@@ -110,7 +110,7 @@
                         attr: 'style="width: 100%;"placeholder="Nodes Id" ' }
                     },
                     { field: 'new_container_type', type: 'list',
-                        html: { label: 'Container Type',attr: 'style="width: 100%"' },
+                        html: { label: '<%= __("container_type_title") %>',attr: 'style="width: 100%"' },
                         options: { items: [
                             <% for(let i =0;i<container_types.length;i++){%>
                             {id:<%=container_types[i].id%>,text:'<%=container_types[i].type%>'}, 
@@ -118,18 +118,18 @@
                         ]},
                     },
                     { field: 'new_description', type: 'text', required: false, editable:true, 
-                        html: { label: 'Description', 
+                        html: { label: '<%= __("description_title") %>', 
                         attr: 'style="width: 100%;"placeholder="About this Node" ' }
                     },
                     { field: 'new_min_capacity', type: 'float', required: true, editable:true, 
-                        html: { label: 'Min capacity', 
+                        html: { label: '<%= __("min_capacity_title") %>', 
                         attr: 'style="width: 100%";' }
                     },
                     { field: 'new_current_vol', type: 'float', required: true, editable:true, 
-                        html: { label: 'Current Vol.', attr: 'style="width: 100%";' }
+                        html: { label: '<%= __("current_vol_title") %>', attr: 'style="width: 100%";' }
                     },
                     { field: 'new_max_capacity', type: 'float', required: true, editable:true, 
-                        html: { label: 'Max capacity.', 
+                        html: { label: '<%= __("max_capacity_title") %>', 
                         attr: 'style="width: 100%";' }
                     }
                 ],
@@ -148,12 +148,12 @@
                         let curr_max = nodesForm.record.new_max_capacity;
 
                         if(curr_min > curr_vol){
-                            w2alert("Min capacity cant be bigger than current vol.");
+                            w2alert("<%= __('min_capacity_err') %>");
                             return;
                         }
 
                         if(curr_vol > curr_max){
-                            w2alert("Current Vol cant be bigger than Max capacity.");
+                            w2alert("<%= __('current_vol_err') %>");
                             return;
                         }
 
@@ -189,7 +189,7 @@
             });
 
             w2popup.open({
-                title   : 'Nodes Form',
+                title   : '<%= __("nodes_form_title") %>',
                 body    : '<div id="nodesForm" style="width: 100%; height: 100%;"></div>',
                 style   : 'padding: 15px 0px 0px 0px',
                 width   : 400,
@@ -222,20 +222,20 @@
             },
             multiSearch: true,
             searches: [
-                { field: 'node_id', label: 'Node', type: 'text' },
-                { field: 'current_vol', label: 'Current', type: 'int' },
-                { field: 'min_capacity', label: 'Min', type: 'int' },
-                { field: 'max_capacity', label: 'Max', type: 'int' },
+                { field: 'node_id', label: '<%= __("nodes_form_title") %>', type: 'text' },
+                { field: 'current_vol', label: '<%= __("current_vol_title") %>', type: 'float' },
+                { field: 'min_capacity', label: '<%= __("min_capacity_title") %>', type: 'float' },
+                { field: 'max_capacity', label: '<%= __("max_capacity_title") %>', type: 'float' },
             ],
             columns: [
                 { field: 'recid', text: 'Id', hidden: true },
-                { field: 'node_id', text: 'Node',sortable:true,size:'10%' },
+                { field: 'node_id', text: '<%= __("nodes_form_title") %>',sortable:true,size:'10%' },
                 { field: 'container_type_id', text: 'Container_id', hidden: true },
-                { field: 'container_type', text: 'Container Type',sortable:true,size:'10%' },
-                { field: 'description', text: 'Description', size:'35%' },
-                { field: 'min_capacity', text: 'Min V.',sortable:true,size:'15%',render:'float:02' },
-                { field: 'current_vol', text: 'Current',sortable:true,size:'15%',render:'float:02'},
-                { field: 'max_capacity', text: 'Max V.',sortable:true, size:'15%',render:'float:02'},
+                { field: 'container_type', text: '<%= __("container_type_title") %>',sortable:true,size:'10%' },
+                { field: 'description', text: '<%= __("description_title") %>', size:'35%' },
+                { field: 'min_capacity', text: '<%= __("min_capacity_title") %>',sortable:true,size:'15%',render:'float:02' },
+                { field: 'current_vol', text: '<%= __("current_vol_title") %>',sortable:true,size:'15%',render:'float:02'},
+                { field: 'max_capacity', text: '<%= __("max_capacity_title") %>',sortable:true, size:'15%',render:'float:02'},
                 { field: 'Lat', text: 'Lat',hidden:true},
                 { field: 'Long', text: 'Long',hidden:true}
             ],
@@ -269,24 +269,24 @@
                 
 
                 w2confirm({
-                    msg: 'Do you want to delete this node?',
-                    title: "DELETE NODE",
+                    msg: '<%= __("delete_node_msg") %> ',
+                    title: '<%= __("delete_node_title") %>',
                     width: 450,        // width of the dialog
                     height: 220,       // height of the dialog
                     btn_yes: {
-                        text: 'yes',   // text for yes button (or yes_text)
+                        text: '<%= __("yes") %>',   // text for yes button (or yes_text)
                         class: 'btn-danger',     // class for yes button (or yes_class)
                         style: 'background-color:red;',     // style for yes button (or yes_style)
                         onClick: null  // callBack for yes button (or yes_callBack)
                     },
                     btn_no: {
-                        text: 'No',    // text for no button (or no_text)
+                        text: '<%= __("no") %>',    // text for no button (or no_text)
                         class: '',     // class for no button (or no_class)
                         style: '',     // style for no button (or no_style)
                         onClick: null  // callBack for no button (or no_callBack)
                     },
                     callBack: function(answer){
-                        if(answer === 'yes'){
+                        if(answer === '<%= __("yes") %>'){
                             $.post('<%=home_url%>/api/deleteNode', node, function(respuesta){
                                 if(respuesta)
                                     window.location.reload();

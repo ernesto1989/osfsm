@@ -5,6 +5,7 @@
 const { __ } = require("i18n");
 const constants = require("../../constants");
 const scenariosService = require("../../Service/scenarioService")
+const catalogsService = require("../../Service/catalogsService")
 const utils = require("./utilities")
 
 
@@ -46,6 +47,7 @@ async function homePage(req,res){
 
     res.render('index',template_engine_object);
 }
+
 
 module.exports = {
     index,
