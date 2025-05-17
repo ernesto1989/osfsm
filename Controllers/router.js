@@ -16,9 +16,11 @@ const userControllers = require('./Templates/userController');
 const homeControllers = require('./Templates/homeController');
 const nodesControllers = require('./Templates/nodesController');
 const consumersControllers = require('./Templates/consumersController');
+const flowsControllers = require('./Templates/flowsController');
 const constants = require("../constants");
 const nodesApi = require("./API/nodesRest");
 const consumersRest = require("./API/consumersRest");
+const flowsRest = require("./API/flowsRest");
 
 const router = express.Router();
 
@@ -30,6 +32,7 @@ router.get(constants.indexURL, homeControllers.index);
 router.get(constants.contextURL, homeControllers.homePage);
 router.get(constants.contextURL + '/:scenarioId/nodes', nodesControllers.scenarioNodes);
 router.get(constants.contextURL + '/:scenarioId/consumers', consumersControllers.scenarioConsumers);
+router.get(constants.contextURL + '/:scenarioId/flows', flowsControllers.scenarioFlows);
 router.get(constants.contextURL+'/lang', userControllers.lang);
 
 
@@ -43,5 +46,8 @@ router.post(constants.contextURL + constants.apiURL + "/deleteNode",nodesApi.del
 router.get(constants.contextURL + constants.apiURL + "/getConsumers/:scenarioId",consumersRest.getScenarioNodes);
 router.post(constants.contextURL + constants.apiURL + "/saveConsumer",consumersRest.saveNode);
 router.post(constants.contextURL + constants.apiURL + "/deleteConsumer",consumersRest.deleteNode);
+
+/*Consumer nodes API routes */
+router.get(constants.contextURL + constants.apiURL + "/getFlows/:scenarioId",flowsRest.getScenarioFlows);
 
 module.exports = router;

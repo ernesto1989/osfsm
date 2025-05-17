@@ -34,5 +34,12 @@
 	"delete_consumer_msg": "Do you want to delete this Consumer?",
 	"delete_consumer_title": "Delete consumer",
 	"zero_val_err": "Should greater than zero",
-	"percentage_val_err": "Should be between 0 and 100"
+	"percentage_val_err": "Should be between 0 and 100",
+	"flow_origin_title":"Origin",
+	"flow_destiny_title":"Destination",
+	"flow_desc":"Description",
+	"flow_type":"Type",
+	"min_flow":"Min. Flow",
+	"curr_flow":"Curr. Flow",
+	"max_flow": "Max. Flow"
 }

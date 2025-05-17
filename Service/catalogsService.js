@@ -16,9 +16,9 @@ async function getFlowTypes(){
     try{
         let query = getTypesQuery;
         qResult = await dataSource.getData(query);
-        return qResult.rows;
+        return qResult;
     }catch(err){
-        return [];
+        return new dataSource.QueryResult(false,null,0,0,err);
     }
 }
 

@@ -240,9 +240,15 @@
             multiSearch: true,
             searches: [
                 { field: 'node_id', label: '<%= __("nodes_form_title") %>', type: 'text' },
-                { field: 'current_vol', label: '<%= __("current_vol_title") %>', type: 'float' },
-                { field: 'min_capacity', label: '<%= __("min_capacity_title") %>', type: 'float' },
-                { field: 'max_capacity', label: '<%= __("max_capacity_title") %>', type: 'float' },
+                { field: 'container_type', label: '<%= __("container_type_title") %>', type: 'list',
+                   options:{
+                        items:[
+                            <% for(let i =0;i<container_types.length;i++){%>
+                            '<%=container_types[i].type%>', 
+                            <%}%>
+                        ]
+                   }
+                }
             ],
             columns: [
                 { field: 'recid', text: 'Id', hidden: true },

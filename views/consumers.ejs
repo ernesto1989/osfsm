@@ -218,6 +218,15 @@
             multiSearch: true,
             searches: [
                 { field: 'node_id', label: '<%= __("consumers_form_title") %>', type: 'text' },
+                { field: 'container_type', label: '<%= __("consumer_type_title") %>', type: 'list',
+                   options:{
+                        items:[
+                            <% for(let i =0;i<consumer_types.length;i++){%>
+                            '<%=consumer_types[i].type%>', 
+                            <%}%>
+                        ]
+                   }
+                }
             ],
             columns: [
                 { field: 'recid', text: 'Id', hidden: true },

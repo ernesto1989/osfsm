@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flows - <%=scenario_id%> </title>
+    <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html,
+        body{
+            height: 100%;
+        }
+        
+        .container-fluid {
+            height:93%
+        }
+
+        #content-grid {
+            margin:auto;
+            width: 98%;
+            height: 95%;
+            padding: 2px;
+        }
+    </style>  
+    <script type="module">
+
+        import { w2grid, w2utils, w2form, w2ui, w2popup, w2alert, w2confirm } from 'https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.es6.min.js'
+        let types =[];
+        let isEdit = false;
+        let region = '<%=region_id%>';
+        let region_name = '<%=region_name%>';
+        let scenarioId = '<%=scenario_id%>';
+
+
+        $("document").ready(function(){
+            $.get("<%=home_url%>/api/getFlows/<%=scenario_id%>", function(data, status){
+                let recs = data.records;
+                grid.records = recs;
+                grid.refresh();
+            });
+        });
+
+
+        
+
+        let grid = new w2grid({
+            name: 'grid',
+            box: '#content-grid',
+            header  : '<%=region_name%> <%= __("flows_menu") %> - <%=scenario_id%> - <%= __("cap_units_msg") %> <%=capacity_units%> -  <%= __("time_units_msg") %> <%=time_units%>',
+            show: {
+                header:true,
+                toolbar: true,
+                // < % if(user_info.role.name === 'admin' && scenarioId === base_scenario ){ % >
+                //if user is admin and is in the base scenario, then can CRUD the nodes
+                toolbarAdd: true,
+                toolbarEdit: true,
+                toolbarDelete: true
+                // < % }  % >
+            },
+            searches: [
+                { field: 'origin', label: 'Origin', type: 'text' },
+                { field: 'destiny', label: 'Destiny', type: 'text' },
+                { field: 'type', label: 'Type', type: 'list',
+                   options:{
+                        items:[
+                            <% for(let i =0;i<flow_types.length;i++){%>
+                            '<%=flow_types[i].type%>', 
+                            <%}%>
+                        ]
+                   }
+                }
+            ],          
+            columns: [
+                { field: 'recid', text: 'Id', hidden:true },
+                { field: 'origin_recid', hidden:true },
+                { field: 'origin_type', hidden:true },
+                { field: 'origin', text: '<%= __("flow_origin_title") %>',sortable:true, size:'10%' },
+                { field: 'destiny_recid', hidden:true },
+                { field: 'destiny_type', hidden:true },
+                { field: 'destiny', text: '<%= __("flow_destiny_title") %>',sortable:true, size:'10%' },
+                { field: 'flow_desc', text: '<%= __("flow_desc") %>',sortable:false, size:'24%' },
+                { field: 'type_id', hidden:true },
+                { field: 'name', text: '<%= __("flow_type") %>', size:'11%' },
+                { field: 'fmin', text: '<%= __("min_flow") %> (<%=capacity_units%>/<%=time_units%>)', size:'15%',sortable:true,render:'float:02' },
+                { field: 'current_flow', text: '<%= __("curr_flow") %> (<%=capacity_units%>/<%=time_units%>)',sortable:true, size:'15%',render:'float:02' },
+                { field: 'fmax', text: '<%= __("max_flow") %> (<%=capacity_units%>/<%=time_units%>)', size:'15%',sortable:true,render:'float:02' }
+            ]
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid" style="width:100%;height:100%;">
+        <div id="content-grid" style="width:95%;height:95%;margin: 5px;">
+        </div>
+    </div>
+</body>
+</html>

@@ -94,6 +94,10 @@
                     
                     if(split_res[1] === 'consumers'){
                         window.open('<%=home_url%>/'+ split_res[0] + '/consumers','consumers_'+ split_res[0],'toolbar=no,location=no,status=no,menubar=no,resizable=yes,width='+screen.availWidth+',height='+screen.availHeight);
+                    }
+                    
+                    if(split_res[1] === 'flows'){
+                        window.open('<%=home_url%>/'+ split_res[0] + '/flows','flows_'+ split_res[0],'toolbar=no,location=no,status=no,menubar=no,resizable=yes,width='+screen.availWidth+',height='+screen.availHeight);
                     }else{
                         return;
                     }
