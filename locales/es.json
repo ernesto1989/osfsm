@@ -1,5 +1,5 @@
 {
-	"app_name": "Modelo OSF",
+	"app_name": "OSF Scenario Manager",
 	"welcome_message": "Dashboard",
 	"user_login": "Usuario",
 	"password_login": "Password",
@@ -41,5 +41,12 @@
 	"flow_type": "Tipo de f.",
 	"min_flow": "Flujo Min.",
 	"curr_flow": "Actual",
-	"max_flow": "Flujo Max."
+	"max_flow": "Flujo Max.",
+	"same_node_error": "El origen y destino no pueden ser el mismo",
+	"min_max_flow_error": "El flujo mínimo no puede ser el mismo que el flujo máximo",
+	"min_curr_flow_error": "El flujo mínimo no puede ser mayor al flujo actual",
+	"curr_max_flow_error": "El flujo actual no puede ser mayor al flujo máximo",
+	"no_nodes_error": "No se encontraron nodos en la región. Contacte a su administrador.",
+	"delete_flow_msg": "Desea eliminar el flujo?",
+	"delete_flow_title": "Eliminar flujo"
 }

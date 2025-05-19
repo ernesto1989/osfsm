@@ -41,5 +41,10 @@
 	"flow_type":"Type",
 	"min_flow":"Min. Flow",
 	"curr_flow":"Curr. Flow",
-	"max_flow": "Max. Flow"
+	"max_flow": "Max. Flow",
+	"same_node_error": "Origin and Destination can't be the same",
+	"min_max_flow_error": "Min Flow cant be bigger than Max Flow.",
+	"min_curr_flow_error": "Min Flow cant be bigger than Current Flow.",
+	"curr_max_flow_error": "Current Flow cant be bigger than Max Flow.",
+	"no_nodes_error": "There are no nodes. Please contact your administrator."
 }

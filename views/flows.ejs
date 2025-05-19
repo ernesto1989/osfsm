@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flows - <%=scenario_id%> </title>
+    <title><%= __('flows_menu') %> - <%=scenario_id%> </title>
     <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -137,7 +137,7 @@
                         html: { label: 'Flow Id', attr: 'readonly style="width: 100%";' }
                     },
                     { field: 'new_origin', type: 'list',
-                        html: { label: 'Origin',attr: 'style="width: 100%"' },
+                        html: { label: '<%= __("flow_origin_title") %>',attr: 'style="width: 100%"' },
                         options: { items: [
                             <% for(let i =0;i<generator_nodes.length;i++){%>
                             {id: <%=generator_nodes[i].recid%>,text:'<%=generator_nodes[i].node_id%>',origin_type: <%=generator_nodes[i].node_type%>}, 
@@ -148,7 +148,7 @@
                         ]},
                     },
                     { field: 'new_destiny', type: 'list',
-                        html: { label: 'Destination',attr: 'style="width: 100%"' },
+                        html: { label: '<%= __("flow_destiny_title") %>',attr: 'style="width: 100%"' },
                         options: { items: [
                             <% for(let i =0;i<container_nodes.length;i++){%>
                             {id: <%=container_nodes[i].recid%>,text:'<%=container_nodes[i].node_id%>',destination_type: <%=container_nodes[i].node_type%>}, 
@@ -159,16 +159,16 @@
                         ]},
                     },
                     { field: 'new_desc', type: 'text',  
-                        html: { label: 'Description', attr: 'style="width: 100%;" placeholder="About this flow"' }
+                        html: { label: '<%= __("flow_desc") %>', attr: 'style="width: 100%;" placeholder="About this flow"' }
                     },
                     { field: 'new_min_flow', type: 'float', required: true, editable:true, 
-                        html: { label: 'Min. Flow', attr: 'style="width: 100%";' }
+                        html: { label: '<%= __("min_flow") %>', attr: 'style="width: 100%";' }
                     },
                     { field: 'new_current_flow', type: 'float', required: true, editable:true, 
-                        html: { label: 'Current Flow.', attr: 'style="width: 100%";' }
+                        html: { label: '<%= __("curr_flow") %>', attr: 'style="width: 100%";' }
                     },
                     { field: 'new_max_flow', type: 'float', required: true, editable:true, 
-                        html: { label: 'Max Flow.', attr: 'style="width: 100%";' }
+                        html: { label: '<%= __("max_flow") %>', attr: 'style="width: 100%";' }
                     }
                 ],
                 onChange:function(event){
@@ -179,7 +179,7 @@
                     let destinationType = flowsForm.record.new_destiny.destination_type;
 
                     if(origin === destination){
-                        w2alert("Nodes can't be the same");
+                        w2alert('<%= __("same_node_error") %>');
                         return;
                     }
 
@@ -216,28 +216,29 @@
                     Save() { 
                         this.validate(); 
 
+                        let origin = flowsForm.record.new_origin.text;
+                        let destination = flowsForm.record.new_destiny.text;
                         let curr_min = flowsForm.record.new_min_flow;
                         let curr_vol = flowsForm.record.new_current_flow;
                         let curr_max = flowsForm.record.new_max_flow;
 
+                        if(origin === destination){
+                            w2alert('<%= __("same_node_error") %>');
+                            return;
+                        }
+
                         if(curr_min > curr_max){
-                            w2alert("Min Flow cant be bigger than Max Flow.");
+                            w2alert('<%= __("min_max_flow_error") %>');
                             return;
                         }
 
                         if( curr_min > curr_vol){
-                            w2alert("Min Flow cant be bigger than current flow.");
+                            w2alert('<%= __("min_curr_flow_error") %>');
                             return;
                         }
 
                         if(curr_vol > curr_max){
-                            w2alert("Current Flow cant be bigger than Max Flow.");
-                            return;
-                        }
-
-
-                        if(flowsForm.record.new_origin.text === flowsForm.record.new_destiny.text){
-                            w2alert("Invalid Origin and Destiny");
+                            w2alert('<%= __("curr_max_flow_error") %>');
                             return;
                         }
 
@@ -344,7 +345,7 @@
             // },
             onAdd: function (event) {
                 <%if(generator_nodes.length === 0 || container_nodes.length === 0 || consumer_nodes.length === 0) { %>   
-                    w2alert("There are no nodes!. \nPlease add nodes first to the Topology");
+                    w2alert("<%= __('no_nodes_error') %>");
                 <%} else {%>
                     event.preventDefault();
                     isEdit = false;
@@ -376,24 +377,24 @@
                 };
                 
                 w2confirm({
-                    msg: 'Do you want to delete this flow?',
-                    title: "DELETE flow",
+                    msg: '<%= __("delete_flow_msg") %>',
+                    title: '<%= __("delete_flow_title") %>',
                     width: 450,        // width of the dialog
                     height: 220,       // height of the dialog
                     btn_yes: {
-                        text: 'yes',   // text for yes button (or yes_text)
+                        text: '<%= __("yes") %>',   // text for yes button (or yes_text)
                         class: 'btn-danger',     // class for yes button (or yes_class)
                         style: 'background-color:red;',     // style for yes button (or yes_style)
                         onClick: null  // callBack for yes button (or yes_callBack)
                     },
                     btn_no: {
-                        text: 'No',    // text for no button (or no_text)
+                        text: '<%= __("no") %>',    // text for no button (or no_text)
                         class: '',     // class for no button (or no_class)
                         style: '',     // style for no button (or no_style)
                         onClick: null  // callBack for no button (or no_callBack)
                     },
                     callBack: function(answer){
-                        if(answer === 'yes'){
+                        if(answer === '<%= __("yes") %>'){
                             $.post('<%=home_url%>/api/deleteFlow', flow, function(respuesta){
                                 if(respuesta)
                                     window.location.reload();
