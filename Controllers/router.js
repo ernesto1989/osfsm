@@ -49,5 +49,7 @@ router.post(constants.contextURL + constants.apiURL + "/deleteConsumer",consumer
 
 /*Consumer nodes API routes */
 router.get(constants.contextURL + constants.apiURL + "/getFlows/:scenarioId",flowsRest.getScenarioFlows);
+router.post(constants.contextURL + constants.apiURL + "/saveFlow",flowsRest.saveFlow);
+router.post(constants.contextURL + constants.apiURL + "/deleteFlow",flowsRest.deleteFlow);
 
 module.exports = router;

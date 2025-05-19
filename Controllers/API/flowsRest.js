@@ -69,7 +69,7 @@ async function saveFlow(req,res){
         let result;
         if(!flow.new_record){
             //update
-            result = await nodesService.updateNode(node,region_id);  
+            result = await flowsService.updateFlow(flow,region_id);
             res.status(200);
             res.json({
                 "status"  : "success",
@@ -78,7 +78,7 @@ async function saveFlow(req,res){
             });          
         }else{
             //insert
-            result = await nodesService.insertNode(node,region_id);
+            result = await flowsService.insertFlow(flow,region_id);
             res.status(200);
             res.json({
                 "status"  : "success",
@@ -105,7 +105,7 @@ async function saveFlow(req,res){
  * @param {*} res 
  * @returns 
  */
-async function deleteNode(req,res){
+async function deleteFlow(req,res){
     try{
         if (!req.session.isLoggedIn) {
             let jsonError = {
@@ -118,9 +118,8 @@ async function deleteNode(req,res){
         }
         let session = await utilities.getSessionInfo(req);
         
-        let node = req.body;
-        const region_id = session.region_id;
-        let result = await nodesService.deleteNode(node,region_id);
+        let flow = req.body;
+        let result = await flowsService.deleteFlow(flow);
         //await flowsService.deleteFlowsByNodeIn(node,region_id);
         //await flowsService.deleteFlowsByNodeOut(node,region_id);
        
@@ -144,5 +143,5 @@ async function deleteNode(req,res){
 }
 
 module.exports = {
-    getScenarioFlows, saveFlow
+    getScenarioFlows, saveFlow,deleteFlow
 };

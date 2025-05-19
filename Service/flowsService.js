@@ -31,14 +31,16 @@ const getFlowsQuery =
     WHERE a02.scenario_id = ? and a02.region_id = ?
 `;
 
-const selectOriginNodes = `
+const selectGeneratorNodes = `
     SELECT 
         a01a.id as recid,
         a01a.node_id,
         a01a.node_type
     FROM a01a_generator_nodes a01a
     WHERE region_id = ? and scenario_id = ?
-    UNION
+`;
+
+const selectContainerNodes = `
     SELECT 
         a01b.id as recid,
         a01b.node_id,
@@ -47,14 +49,7 @@ const selectOriginNodes = `
     WHERE region_id = ? and scenario_id = ?
 `;
 
-const selectDestinationNodes = `
-    SELECT 
-        a01b.id as recid,
-        a01b.node_id,
-        a01b.node_type
-    FROM a01b_container_nodes a01b
-    WHERE region_id = ? and scenario_id = ?
-    union
+const selectConsumerNodes = `
     select 
         a01c.id as recid,
         a01c.node_id,
@@ -94,15 +89,15 @@ async function getFlows(scenarioId,region_id){
 }
 
 /**
- * Method that constructs a list of possible origin nodes for the Flows View
+ * Method that constructs a list of possible generator nodes for the Flows View
  * @param {*} scenarioId 
  * @param {*} region_id 
  * @returns list of origin nodes
  */
-async function getOriginNodes(scenarioId,region_id){
+async function getGeneratorNodes(scenarioId,region_id){
     try{
-        let query = selectOriginNodes;
-        let params = [region_id,scenarioId,region_id,scenarioId]
+        let query = selectGeneratorNodes;
+        let params = [region_id,scenarioId]
         qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
@@ -111,15 +106,32 @@ async function getOriginNodes(scenarioId,region_id){
 }
 
 /**
- * Method that constructs a list of possible destination nodes for the Flows View
+ * Method that constructs a list of possible container nodes for the Flows View
  * @param {*} scenarioId 
  * @param {*} region_id 
  * @returns list of origin nodes
  */
-async function getDestinationNodes(scenarioId,region_id){
+async function getContainerNodes(scenarioId,region_id){
     try{
-        let query = selectDestinationNodes;
-        let params = [region_id,scenarioId,region_id,scenarioId]
+        let query = selectContainerNodes;
+        let params = [region_id,scenarioId]
+        qResult = await dataSource.getDataWithParams(query,params);
+        return qResult;
+    }catch(err){
+        return new dataSource.QueryResult(false,null,0,0,err);
+    }
+}
+
+/**
+ * Method that constructs a list of possible consumer nodes for the Flows View
+ * @param {*} scenarioId 
+ * @param {*} region_id 
+ * @returns list of origin nodes
+ */
+async function getConsumerNodes(scenarioId,region_id){
+    try{
+        let query = selectConsumerNodes;
+        let params = [region_id,scenarioId]
         qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
@@ -161,7 +173,7 @@ async function insertFlow(flow,region_id){
  * @param {*} region_id 
  * @returns 
  */
-async function updateFlow(flow,region_id){
+async function updateFlow(flow){
     try{
         let query = updateFlowQuery;
         // flow_desc = ?, current_flow = ?, fmax = ?, fmin = ? where id = ? 
@@ -231,4 +243,4 @@ async function deleteFlowsByNodeOut(node,region_id){
     }
 }
 
-module.exports = {getFlows, getOriginNodes, getDestinationNodes,insertFlow,updateFlow,deleteFlow, deleteFlowsByNodeIn,deleteFlowsByNodeOut}
+module.exports = {getFlows,getGeneratorNodes, getContainerNodes, getConsumerNodes,insertFlow,updateFlow,deleteFlow, deleteFlowsByNodeIn,deleteFlowsByNodeOut}

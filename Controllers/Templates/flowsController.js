@@ -27,8 +27,9 @@ async function scenarioFlows(req,res){
     let capacityUnits = (await scenariosService.getScenarioCapacityUnits(session.region_id,scenarioId)).getRows()[0];
     let timeUnits = (await scenariosService.getScenarioTimeUnits(session.region_id,scenarioId)).getRows()[0];
     let containerTypes = (await catalogsService.getContainerTypes()).getRows();
-    let originNodes = (await flowsService.getOriginNodes()).getRows();
-    let destinationNodes = (await flowsService.getDestinationNodes()).getRows();
+    let generatorNodes = (await flowsService.getGeneratorNodes(scenarioId,session.region_id)).getRows();
+    let containerNodes = (await flowsService.getContainerNodes(scenarioId,session.region_id)).getRows();
+    let consumerNodes = (await flowsService.getConsumerNodes(scenarioId,session.region_id)).getRows();
 
     //get input and output nodes
     let template_engine_object = {
@@ -40,8 +41,9 @@ async function scenarioFlows(req,res){
         capacity_units:capacityUnits.unit_value,
         time_units: timeUnits.unit_value,
         container_types: containerTypes,
-        origin_nodes: originNodes,
-        destination_nodes: destinationNodes
+        generator_nodes:generatorNodes,
+        container_nodes: containerNodes,
+        consumer_nodes: consumerNodes
     };
         
     res.render('flows',template_engine_object);
