@@ -18,6 +18,7 @@ const nodesControllers = require('./Templates/nodesController');
 const consumersControllers = require('./Templates/consumersController');
 const flowsControllers = require('./Templates/flowsController');
 const constants = require("../constants");
+const scenariosApi = require("./API/scenariosRest");
 const nodesApi = require("./API/nodesRest");
 const consumersRest = require("./API/consumersRest");
 const flowsRest = require("./API/flowsRest");
@@ -36,18 +37,22 @@ router.get(constants.contextURL + '/:scenarioId/flows', flowsControllers.scenari
 router.get(constants.contextURL+'/lang', userControllers.lang);
 
 
+/* Scenarios API routes */
+router.get(constants.contextURL + constants.apiURL + "/getSummary/:scenarioId",scenariosApi.getScenarioSumary);
+router.post(constants.contextURL + constants.apiURL + "/createScenario",scenariosApi.createScenario);
+router.post(constants.contextURL + constants.apiURL + "/deleteScenario",scenariosApi.deleteScenario);
 
-/*Container nodes API routes */
+/* Container nodes API routes */
 router.get(constants.contextURL + constants.apiURL + "/getNodes/:scenarioId",nodesApi.getScenarioNodes);
 router.post(constants.contextURL + constants.apiURL + "/saveNode",nodesApi.saveNode);
 router.post(constants.contextURL + constants.apiURL + "/deleteNode",nodesApi.deleteNode);
 
-/*Consumer nodes API routes */
+/* Consumer nodes API routes */
 router.get(constants.contextURL + constants.apiURL + "/getConsumers/:scenarioId",consumersRest.getScenarioNodes);
 router.post(constants.contextURL + constants.apiURL + "/saveConsumer",consumersRest.saveNode);
 router.post(constants.contextURL + constants.apiURL + "/deleteConsumer",consumersRest.deleteNode);
 
-/*Consumer nodes API routes */
+/* Consumer nodes API routes */
 router.get(constants.contextURL + constants.apiURL + "/getFlows/:scenarioId",flowsRest.getScenarioFlows);
 router.post(constants.contextURL + constants.apiURL + "/saveFlow",flowsRest.saveFlow);
 router.post(constants.contextURL + constants.apiURL + "/deleteFlow",flowsRest.deleteFlow);
