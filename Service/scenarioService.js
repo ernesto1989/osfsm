@@ -27,6 +27,17 @@ const scenarioSumaryQuery =
 `;
 
 
+let scenarioMapQuery = `
+    select 
+        a01b.node_id,
+        a01b.description,
+        a01b.Lat,
+        a01b.\`Long\` 
+    from a01b_container_nodes a01b 
+    where a01b.scenario_id = ? and a01b.region_id = ?
+`
+
+
 /**
  * Service that obtains the whole Scenario's list. This is for Main UI purposes.
  * 
@@ -56,6 +67,24 @@ async function getScenariosList(region_id){
 async function getScenarioSumary(scenarioId,region_id){
     try{
         let query = scenarioSumaryQuery;
+        let params = [scenarioId,region_id]
+        qResult = await dataSource.getDataWithParams(query,params);
+        return qResult;
+    }catch(err){
+        return new dataSource.QueryResult(false,null,0,0,err);
+    }
+}
+
+/**
+ * This method obtains a scenario nodes for map rendering
+ * 
+ * @param {String} scenarioId The scenario Id
+ * @param {String} region_id The users region
+ * @returns the scenario object
+ */
+async function getScenarioMap(scenarioId,region_id){
+    try{
+        let query = scenarioMapQuery;
         let params = [scenarioId,region_id]
         qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
@@ -140,4 +169,4 @@ async function getScenarioTimeUnits(region_id,scenario_id){
     }
 }
 
-module.exports = {getScenariosList, getScenarioSumary, cloneScenario, deleteScenario,getScenarioCapacityUnits,getScenarioTimeUnits};
+module.exports = {getScenariosList, getScenarioSumary, getScenarioMap,cloneScenario, deleteScenario,getScenarioCapacityUnits,getScenarioTimeUnits};

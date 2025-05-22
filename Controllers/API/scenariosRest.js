@@ -26,11 +26,13 @@ async function getScenarioSumary(req,res){
         let scenarioId = req.params.scenarioId;
         let regionId = session.region_id;
         const scenarioSumary = await scenarioService.getScenarioSumary(scenarioId,regionId);
+        const scenarioMap = await scenarioService.getScenarioMap(scenarioId,regionId);
 
         res.status(200);
         res.json({
             "status"  : "success",
-            "sumary" : scenarioSumary.getRows()[0]
+            "summary" : scenarioSumary.getRows()[0],
+            "map": scenarioMap.getRows()
         });
     }catch(error){
         let jsonError = {
