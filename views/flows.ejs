@@ -178,20 +178,31 @@
                     let originType = flowsForm.record.new_origin.origin_type;
                     let destinationType = flowsForm.record.new_destiny.destination_type;
 
+                    if(modifiedField === 'new_origin' && originType === 1){
+                        //if im selecting a generator node, then the destination must be a container node.
+                        if(destinationType === 3){
+                            w2ui.flowsForm.record.new_destiny = {id:<%=container_nodes[0].recid%>,text:'<%=container_nodes[0].node_id%>',destination_type: <%=container_nodes[0].node_type%>};
+                            w2ui.flowsForm.refresh();
+                            destinationType = 2;
+                            destination = flowsForm.record.new_destiny.text;
+                            
+                        }
+                    }
+
+                    if(modifiedField === 'new_destiny' && destinationType === 3){
+                        //if im selecting a consumer node, then the origin must be a container node.
+                        if(originType === 1){
+                            w2ui.flowsForm.record.new_origin = {id:<%=container_nodes[0].recid%>,text:'<%=container_nodes[0].node_id%>',origin_type: <%=container_nodes[0].node_type%>};
+                            w2ui.flowsForm.refresh();
+                            originType = 2;
+                            origin = flowsForm.record.new_origin.text;
+                        }
+                    }
+
                     if(origin === destination){
+                        //can occur only if both nodes are container nodes.
                         w2alert('<%= __("same_node_error") %>');
                         return;
-                    }
-
-                    if(originType === 1){
-                        w2ui.flowsForm.record.new_destiny = 
-                        {id:<%=container_nodes[0].recid%>,text:'<%=container_nodes[0].node_id%>',destination_type: <%=container_nodes[0].node_type%>};
-                        w2ui.flowsForm.refresh();
-                    }
-
-                    if(destinationType === 3){
-                        w2ui.flowsForm.record.new_origin = {id:<%=container_nodes[0].recid%>,text:'<%=container_nodes[0].node_id%>',origin_type: <%=container_nodes[0].node_type%>};
-                        w2ui.flowsForm.refresh();
                     }
 
                     if(originType === 1 || destinationType === 3){
@@ -215,7 +226,8 @@
                     },
                     Save() { 
                         this.validate(); 
-
+                        let origin_type = flowsForm.record.new_origin.origin_type;
+                        let destination_type = flowsForm.record.new_destiny.destination_type;
                         let origin = flowsForm.record.new_origin.text;
                         let destination = flowsForm.record.new_destiny.text;
                         let curr_min = flowsForm.record.new_min_flow;
@@ -227,19 +239,25 @@
                             return;
                         }
 
-                        if(curr_min > curr_max){
-                            w2alert('<%= __("min_max_flow_error") %>');
-                            return;
-                        }
+                        if(origin_type === 1 || destination_type === 3){
+                            //flow will be fixed for V01 of OSF
+                            curr_min = 0.0;
+                            curr_max = 0.0;
+                        } else {
+                            if(curr_min > curr_max){
+                                w2alert('<%= __("min_max_flow_error") %>');
+                                return;
+                            }
 
-                        if( curr_min > curr_vol){
-                            w2alert('<%= __("min_curr_flow_error") %>');
-                            return;
-                        }
+                            if( curr_min > curr_vol){
+                                w2alert('<%= __("min_curr_flow_error") %>');
+                                return;
+                            }
 
-                        if(curr_vol > curr_max){
-                            w2alert('<%= __("curr_max_flow_error") %>');
-                            return;
+                            if(curr_vol > curr_max){
+                                w2alert('<%= __("curr_max_flow_error") %>');
+                                return;
+                            }
                         }
 
                         let flow = {

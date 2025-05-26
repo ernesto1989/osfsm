@@ -129,8 +129,8 @@ async function deleteFlow(req,res){
             "total"   : result.changes,
             "records" : []
         });
-        let message = {action:'update_scenario',scenario_id:node.scenario_id};
-        socketServer.sendMessageToUser(sessionData.user.username,JSON.stringify(message));
+        //let message = {action:'update_scenario',scenario_id:node.scenario_id};
+        //socketServer.sendMessageToUser(sessionData.user.username,JSON.stringify(message));
     }catch(error){
         let jsonError = {
             "status"  : "error",

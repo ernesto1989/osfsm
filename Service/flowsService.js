@@ -19,7 +19,7 @@ const getFlowsQuery =
         CASE 
             when destiny_type = 1 then (select id from a01a_generator_nodes a01a where a01a.region_id = a02.region_id and a01a.scenario_id = a02.scenario_id and a01a.node_id = a02.destiny)
             when destiny_type = 2 then (select id from a01b_container_nodes a01b where a01b.region_id = a02.region_id and a01b.scenario_id = a02.scenario_id and a01b.node_id = a02.destiny)
-            when destiny_type = 2 then (select id from a01c_consumer_nodes a01c where a01c.region_id = a02.region_id and a01c.scenario_id = a02.scenario_id and a01c.node_id = a02.destiny)
+            when destiny_type = 3 then (select id from a01c_consumer_nodes a01c where a01c.region_id = a02.region_id and a01c.scenario_id = a02.scenario_id and a01c.node_id = a02.destiny)
         END as destiny_recid,
         a02.flow_desc,
         a02.type_id,

@@ -1,5 +1,27 @@
-const mysql = require('mysql2')
-//const constants = require("../constants");
+/**
+ * MySQLManager contains methods to interact with a MySQL database.
+ * Reuses typical SQL operations such as get, insert, update, and bulk insert.
+ * 
+ * In order to manage properly the connection pool, it uses the mysql2/promise library.
+ * Creates a connection pool that can be reused across multiple requests.
+ * 
+ * On each method, it gets a connection from the pool, executes the query, and releases the connection back to the pool.
+ * When required (for inserts and updates), it uses transactions to ensure data integrity.
+ * 
+ * Handles connections with async/await syntax for better readability and error handling.
+ * 
+ * This effort comes after investigating the best practices for Node.js and MySQL interactions and mysql transactions and
+ * race conditions.
+ * 
+ * Secure Code!
+ * 
+ * Ernesto Cantú
+ * 05/26/2025
+ *  
+ * @module MySQLManager
+ * @requires mysql2/promise
+ */
+const mysql = require('mysql2/promise')
 require('dotenv').config()
 
 const HOST = process.env.HOST;
@@ -8,6 +30,16 @@ const USR = process.env.USR;
 const PASS = process.env.PASS;
 const DB = process.env.DB;
 
+let pool = mysql.createPool({
+  host: HOST,//constants.dbHost,
+  user: USR,//The OS has a env variable called USER, causing an error on DB login.
+  port: PORT,//constants.dbPort,
+  password: PASS,//constants.dbPass,
+  database: DB,//constants.dbName,
+  decimalNumbers:true,
+  waitForConnections: true,
+  connectionLimit: 10,
+});;
 
 /**
  * Class that responds with an object of the result of a database interaction.
@@ -31,24 +63,6 @@ class QueryResult{
 
 
 /**
- * Connection to database
- * @returns DB Connection Object
- */
-async function open(){
-    
-    const connection = mysql.createConnection({
-      host: HOST,//constants.dbHost,
-      user: USR,//The OS has a env variable called USER, causing an error on DB login.
-      port: PORT,//constants.dbPort,
-      password: PASS,//constants.dbPass,
-      database: DB,//constants.dbName,
-      decimalNumbers:true
-    });
-  
-    return connection;
-}
-
-/**
  * Method that extracts Data without params from a database.
  * 
  * @param {String} query the query to extract data
@@ -57,25 +71,13 @@ async function open(){
 async function getData(query){
   try{
     console.log("Get Data");
-    const conn = await open();
-    return new Promise(function(resolve,reject){
-      conn.connect((err)=>{
-        if (err){
-          reject(err.message);
-        } else{
-          conn.execute(query,(error,data,fields)=>{
-            conn.end();
-            if(error){
-              reject(error.message)
-            }
-            resolve(new QueryResult(true,data,0,0,''));
-          })
-        }
-      });
-    });
-
+    let conn = await pool.getConnection();
+    const [data,fields] = await conn.query(query);
+    conn.release();
+    return new QueryResult(true,data,0,0,'');
   }catch(error){
     console.log(error);
+    return new QueryResult(false,null,0,0,error);
   }
 }
 
@@ -91,24 +93,13 @@ async function getData(query){
 async function getDataWithParams(query,params){
   try{
       console.log("GetData");
-      const conn = await open();
-      return new Promise(function (resolve, reject) {
-          conn.connect((err)=>{
-            if (err){
-              reject(err.message);
-            } else{
-              conn.query(query,params,(error,data,fields)=>{
-                conn.end();
-                if(error){
-                  reject(error.message)
-                }
-                resolve(new QueryResult(true,data,0,0,''));
-              })
-            }
-          });
-      });
+      const conn = await pool.getConnection();
+      const [data,fields] = await conn.query(query,params);
+      conn.release();
+      return new QueryResult(true,data,0,0,'');
   }catch(error){
     console.log(error);
+    return new QueryResult(false,null,0,0,error);
   }
 }
 
@@ -120,27 +111,22 @@ async function getDataWithParams(query,params){
  * @returns {Object} An object of the class QueryResult
  */
 async function insertData(query,params){
+  let conn;
   try{
       console.log("Insert Data");
-      const conn = await open();
-      return new Promise(function (resolve, reject) {
-          conn.connect((err)=>{
-            if (err){
-              reject(err.message);
-            } else{
-              conn.query(query,params,(error,data,fields)=>{
-                conn.end();
-                if(error){
-                  reject(new QueryResult(false,null,0,0,error))
-                }else{
-                  resolve(new QueryResult(true,data,data.insertId,data.affectedRows,''));
-                }
-              })
-            }
-          });
-      });
+      conn = await pool.getConnection();
+      await conn.beginTransaction();
+      const [data,fields] = await conn.query(query,params);
+      await conn.commit();
+      return new QueryResult(true,data,data.insertId,data.affectedRows,'')
   }catch(error){
     console.log(error);
+    if(conn)
+      await conn.rollback();
+    return new QueryResult(false,null,0,0,error); 
+  } finally {
+    if (conn) 
+      conn.release();
   }
 }
 
@@ -152,28 +138,23 @@ async function insertData(query,params){
  * @returns {Object} An object of the class QueryResult
  */
 async function bulkInsertData(query,elements){
+  let conn;
   try{
       console.log("BULK Insert Data");
-      const conn = await open();
-      return new Promise(function (resolve, reject) {
-          conn.connect((err)=>{
-            if (err){
-              reject(err.message);
-            } else{
-              conn.query(query,[elements],(error,data,fields)=>{
-                conn.end();
-                //data.affectedRows, data.changedRows, data.insertId
-                if(error){
-                  reject(new QueryResult(false,null,0,0,error))
-                }else{
-                  resolve(new QueryResult(true,data,data.insertId,data.affectedRows,''));
-                }
-              })
-            }
-          });
-      });
-  }catch(error){
+      conn = await pool.getConnection();
+      await conn.beginTransaction();
+      const [data,fields] = await conn.query(query,[elements]);
+      await conn.release();
+      conn.commit();  
+      return new QueryResult(true,data,data.insertId,data.affectedRows,'');
+  } catch(error){
     console.log(error);
+    if(conn)  
+      conn.rollback();
+    return new QueryResult(false,null,0,0,error); 
+  } finally {
+    if (conn)
+      conn.release();
   }
 }
 
@@ -186,27 +167,21 @@ async function bulkInsertData(query,elements){
  * @returns a Query Result Object
  */
 async function updateData(query,params){
+  let conn;
   try{
       console.log("Update Data");
-      const conn = await open();
-      return new Promise(function (resolve, reject) {
-          conn.connect((err)=>{
-            if (err){
-              reject(err.message);
-            } else{
-              conn.query(query,params,(error,data,fields)=>{
-                conn.end();
-                if(error){
-                  reject(new QueryResult(false,null,0,0,error))
-                }else{
-                  resolve(new QueryResult(true,data,0,data.affectedRows,''));
-                }
-              })
-            }
-          });
-      });
+      conn = await pool.getConnection();
+      await conn.beginTransaction();
+      const [data,fields] = await conn.query(query,params);
+      await conn.commit();
+      return new QueryResult(true,data,0,data.affectedRows,'');
   }catch(error){
     console.log(error);
+    if(conn) 
+      await conn.rollback();
+    return new QueryResult(false,null,0,0,error); 
+  } finally{
+    if(conn) conn.release();
   }
 }
 
