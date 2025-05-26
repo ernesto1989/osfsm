@@ -32,9 +32,9 @@
                 box: '#tabs',
                 active: 'tab1',
                 tabs: [
-                    { id: 'tab1', text: 'Summary' },
-                    { id: 'tab2', text: 'Current Condition' },
-                    { id: 'tab3', text: 'Proposed Solution' },
+                    { id: 'tab1', text: '<%= __("scenario_summary_title_tab") %>' },
+                    { id: 'tab2', text: '<%= __("simulator_title_tab") %>' },
+                    { id: 'tab3', text: '<%= __("solution_title_tab") %>' },
                 ],
                 onClick(event) {
                     query('#tab-example .tab-content').hide()
@@ -55,12 +55,12 @@
          function deleteScenario(){
             let scenario = {'scenario_id':selectedScenario}
             if(scenario.scenario_id === '<%=base_scenario%>'){
-                w2alert("Can't delete Base Scenario");
+                w2alert('<%= __("delete_base_scenario") %>');
                 return;
             }
             w2confirm({
-                msg: 'Do you want to delete the following scenario: ' + scenario.scenario_id,
-                title: "DELETE SCENARIO",
+                msg: '<%= __("delete_scenario_msg") %>' + scenario.scenario_id,
+                title: '<%= __("delete_scenario_title") %>',
                 width: 450,        // width of the dialog
                 height: 220,       // height of the dialog
                 btn_yes: {
@@ -70,13 +70,13 @@
                     onClick: null  // callBack for yes button (or yes_callBack)
                 },
                 btn_no: {
-                    text: 'No',    // text for no button (or no_text)
+                    text: '<%= __("no") %>',    // text for no button (or no_text)
                     class: '',     // class for no button (or no_class)
                     style: '',     // style for no button (or no_style)
                     onClick: null  // callBack for no button (or no_callBack)
                 },
                 callBack: function(answer){
-                    if(answer === 'yes'){
+                    if(answer === '<%= __("yes") %>'){
                         $.ajax({
                             url:'<%=home_url%>/api/deleteScenario', 
                             type:'POST',
@@ -123,13 +123,13 @@
                 style: 'border: 0px; background-color: transparent;',
                 fields: [
                     { field: 'new_scenario_id', type: 'text', required: true, editable:true, 
-                        html: { label: 'Situation ID', attr: 'style="width: 100%"; placeholder="Give the Scenario a name" ' }
+                        html: { label: '<%= __("scenario_id_title") %>', attr: 'style="width: 100%"; placeholder="Give the Scenario a name" ' }
                     },
                     { field: 'new_description', type: 'textarea', required: false, editable:true, 
-                        html: { label: 'Scenario ID', attr: 'style="width: 100%;" placeholder="About this scenario" ' }
+                        html: { label: '<%= __("scenario_description_title") %>', attr: 'style="width: 100%;" placeholder="About this scenario" ' }
                     },
                     { field: 'new_base_scenario', type: 'list',
-                        html: { label: 'Information Origin', attr: 'style="width: 100%"' },
+                        html: { label: '<%= __("base_scenario_title") %>', attr: 'style="width: 100%"' },
                         options: { items: [
                             <%for(let i = 0; i<scenarios.length;i++){%>
                             {id:'<%=scenarios[i].scenario_id%>',text:'<%=scenarios[i].scenario_id%>'},
@@ -200,7 +200,7 @@
             });
             
             w2popup.open({
-                title   : 'New Scenario',
+                title   : '<%= __("new_scenario_title") %>',
                 body    : '<div id="newScenarioForm" style="width: 100%; height: 100%;"></div>',
                 style   : 'padding: 15px 0px 0px 0px',
                 width   : 400,
@@ -224,31 +224,31 @@
                 contentType:"application/json; charset=utf-8",
                 success:function(response){
                     if(response){
-                        $('#scenario_nodes').text('NODES:'+response.summary.container_nodes);
-                        $('#scenario_consumers').text('CONSUMERS:'+response.summary.consumer_nodes);
-                        $('#scenario_flows').text('FLOWS:'+response.summary.flows);
+                        $('#scenario_nodes').text('<%= __("nodes_menu") %>:'+response.summary.container_nodes);
+                        $('#scenario_consumers').text('<%= __("consumers_menu") %>:'+response.summary.consumer_nodes);
+                        $('#scenario_flows').text('<%= __("flows_menu") %>:'+response.summary.flows);
 
-                        var map = L.map('map').setView([25.69656518194606, -100.30537628127692], 13);
+                        // var map = L.map('map').setView([25.69656518194606, -100.30537628127692], 13);
 
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '&copy; OpenStreetMap contributors'
-                        }).addTo(map);
+                        // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        //     attribution: '&copy; OpenStreetMap contributors'
+                        // }).addTo(map);
 
-                        // Add a marker
-                        var marker = L.marker([25.69656518194606, -100.30537628127692]).addTo(map)
-                            .bindPopup('<b>Hello!</b><br>Monterrey.')
-                            .openPopup();
+                        // // Add a marker
+                        // var marker = L.marker([25.69656518194606, -100.30537628127692]).addTo(map)
+                        //     .bindPopup('<%=region_name%>')
+                        //     .openPopup();
 
-                        for(let i = 0; i<response.map.length;i++){
-                            let node = response.map[i];
+                        // for(let i = 0; i<response.map.length;i++){
+                        //     let node = response.map[i];
 
-                            L.circle([node.Lat, node.Long], {
-                                color: 'red',
-                                fillColor: '#f03',
-                                fillOpacity: 0.5,
-                                radius: 1000
-                            }).addTo(map).bindPopup(node.node_id);
-                        }
+                        //     L.circle([node.Lat, node.Long], {
+                        //         color: 'red',
+                        //         fillColor: '#f03',
+                        //         fillOpacity: 0.5,
+                        //         radius: 1000
+                        //     }).addTo(map).bindPopup(node.node_id);
+                        // }
                         
                     }
                 }
@@ -259,10 +259,10 @@
             box: '#toolbar',
             name: 'toolbar',
             items: [
-                { type: 'button', id: 'home', text: '<%= __('app_name') %>', icon: 'fa fa-house' },
+                { type: 'button', id: 'home', text: '<%= __("app_name") %>', icon: 'fa fa-house' },
                 { type: 'break' },
-                { type: 'button', id: 'new', text: 'Create', icon: 'fa fa-pencil' },
-                { type: 'button', id: 'delete', text: 'Delete', icon: 'fa fa-trash'},
+                { type: 'button', id: 'new', text: '<%= __("create_scenario_button") %>', icon: 'fa fa-pencil' },
+                { type: 'button', id: 'delete', text: '<%= __("delete_scenario_button") %>', icon: 'fa fa-trash'},
                 { type: 'spacer' },
                 { type: 'menu', id: 'user', text: '<%=user_info.name%>', icon: 'fa fa-user', items:[
                     { type: 'button', id: 'region', text: '<%=user_info.region_name%>', icon: 'fa fa-circle-info' },
@@ -397,7 +397,64 @@
                                 </div>
                             </div>
                             <div id="tab2" class="tab-content">
-                                Current situation
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-xl-4 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System State
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_state">Draining</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-md-12">
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                Estimated Time to Reach Critical State
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_ct">100 days</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                Container Node Reaching CT.
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_critical_node">N02</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6 col-md-12">
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System's Inputs
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_ct">27 MM3</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System's Outputs
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_critical_node">37 MM3</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h4 class="mt-4">
+                                        TRL Table
+                                    </h4>
                             </div>
                             <div id="tab3" class="tab-content">
                                 There is a solution

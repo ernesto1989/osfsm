@@ -1,4 +1,6 @@
-CREATE DEFINER=`ecv`@`%` PROCEDURE `delete_scenario`(in scenarioId varchar(30), in regionId int)
+-- This method deletes a given scenario.
+-- Currently doesn't delete any solution.
+CREATE PROCEDURE `delete_scenario`(in scenarioId varchar(30), in regionId int)
 BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN

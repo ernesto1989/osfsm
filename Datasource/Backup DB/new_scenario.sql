@@ -1,8 +1,10 @@
+-- This stored procedure creates a new scenario on the database.
+-- Receives the scenario id, the description and the base scenario.
+-- Currently only supports TYPE 1 Scenarios -> scenarios that descend from another scenario.
+-- 
 CREATE PROCEDURE osfdb.create_scenario(
 	in scenarioId varchar(30),in descrp varchar(100),in baseScenarioId varchar(30),in regionId int)
 BEGIN
-	
-	
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
 		ROLLBACK;

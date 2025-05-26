@@ -48,5 +48,17 @@
 	"curr_max_flow_error": "El flujo actual no puede ser mayor al flujo máximo",
 	"no_nodes_error": "No se encontraron nodos en la región. Contacte a su administrador.",
 	"delete_flow_msg": "Desea eliminar el flujo?",
-	"delete_flow_title": "Eliminar flujo"
+	"delete_flow_title": "Eliminar flujo",
+	"scenario_summary_title_tab":"Resumen",
+	"simulator_title_tab":"Estado Actual",
+	"solution_title_tab":"Solución Propuesta",
+	"create_scenario_button":"Nuevo",
+	"delete_scenario_button":"Borrar",
+	"delete_scenario_msg":"Deseas eliminar este escenario?",
+	"delete_scenario_title":"Eliminar escenario",
+	"delete_base_scenario":"No puedes eliminar el escenario oficial.",
+	"scenario_id_title":"Id de escenario",
+	"scenario_description_title":"Descripcion",
+	"base_scenario_title":"Información Base",
+	"new_scenario_title":"Nuevo Escenario"
 }

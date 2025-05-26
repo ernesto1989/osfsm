@@ -40,6 +40,8 @@ async function homePage(req,res){
     let template_engine_object = {
         home_url:constants.contextURL,
         base_scenario: constants.BASE_SCENARIO_ID,
+        region_id:session.region_id,
+        region_name:session.region_name,
         scenarios: scenariosList.getRows(),
         user_info:session,
         capacity_units: utils.capacity_units,
