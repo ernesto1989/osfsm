@@ -1,5 +1,16 @@
 /**
  * Method that holds every required service for node's management. Container Nodes.
+ * 
+ * Implemented Methods:
+ * 
+ * * 1. getNodes: Gets the nodes from the database.
+ * * 2. insertNode: Inserts a new node into the database.
+ * * 3. updateNode: Updates a node in the database.
+ * * 4. deleteNode: Deletes a node from the database.
+ * 
+ * @module Service/nodesService
+ * @requires Datasource/MySQLMngr
+ * Ernesto Cantú
  */
 const dataSource = require('../Datasource/MySQLMngr');
 

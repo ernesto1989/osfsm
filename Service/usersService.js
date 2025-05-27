@@ -1,6 +1,14 @@
 /**
  * This file contains the service for the users.
  * 
+ * Implements the following methods:
+ * 
+ * * 1. isValidUser: checks if the user exists and if the password matches.
+ * * 2. getUsers: gets the list of users.
+ * * 3. insertUser: inserts a new user into the database. This method hashes the password before storing it.
+ * * 4. changePass: changes the password of a user.This method hashes the password before storing it.   
+ * * 5. deleteUser: deletes a user from the database.
+ * 
  * About bycrypt: https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
  * https://www.youtube.com/watch?v=2qZfnjOIMmA
  * 

@@ -1,3 +1,21 @@
+/**
+ * Module that handles the Consumer Nodes REST API.
+ * 
+ * Basic CRUD operations for Consumer Nodes in a scenario.
+ * For all nodes, it uses the sent scenario ID to filter the nodes.
+ * Takes the region ID from the session to ensure that the operations are scoped to the correct region.
+ * 
+ * This module provides endpoints to:
+ * 
+ * * 1. Get nodes for a scenario
+ * * 2. Save a node (insert or update)
+ * * 3. Delete a node
+ * 
+ * @module Controllers/API/consumersRest
+ * @requires Service/consumersService
+ * @requires Controllers/Templates/utilities
+ * Ernesto Cantú
+ */
 const consumersService = require("../../Service/consumersService")
 const utilities = require("../Templates/utilities")
 

@@ -1,3 +1,24 @@
+/**
+ * Module that handles the Flows  REST API.
+ * 
+ * Basic CRUD operations for Flows in a scenario.
+ * For all flows, it uses the sent scenario ID to filter the flows.
+ * Takes the region ID from the session to ensure that the operations are scoped to the correct region.
+ * 
+ * This module provides endpoints to:
+ * 
+ * * 1. Get flows for a scenario
+ * * 2. Save a flows (insert or update)
+ * * 3. Delete a flows
+ * 
+ * In particular, if a node is deleted, all flows that are connected to that node will also be deleted.
+ * This has been implemented on the Database side using triggers, so the delete operation will cascade to the flows.
+ * 
+ * @module Controllers/API/consumersRest
+ * @requires Service/flowsService
+ * @requires Controllers/Templates/utilities
+ * Ernesto Cantú
+ */
 const flowsService = require("../../Service/flowsService")
 const utilities = require("../Templates/utilities")
 

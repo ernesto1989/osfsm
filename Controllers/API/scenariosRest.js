@@ -1,3 +1,25 @@
+/**
+ * Scenarios Rest API.
+ * 
+ * Contains all the HTTP methods that are used to manage scenarios.
+ * 
+ * Implemented methods:
+ * 
+ * 1. getScenarioSumary: Gets a scenario's full summary by its ID.
+ * 2. createScenario: Creates a new scenario by cloning an existing one. Not supporting yect other types of creation.
+ * 3. deleteScenario: Deletes a scenario by its ID.
+ * 
+ * Pending methods:
+ * 1. Create Scenario Current Condition (simulator state).
+ * 2. Create Scenario Solution.
+ * 3. Create other types of scenarios. Considering upload from files.
+ * 
+ * @module Controllers/API/scenariosRest
+ * @requires Service/scenarioService
+ * @requires Controllers/Templates/utilities
+ * 
+ * Ernesto Cantú
+ */
 const scenarioService = require("../../Service/scenarioService")
 const utilities = require("../Templates/utilities")
 

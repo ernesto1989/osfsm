@@ -1,5 +1,18 @@
 /**
  * Method that holds every required service for consumer node's management.
+ * 
+ * Implemented Methods:
+ * 
+ * 1. getFlows: Get Scenario Flows
+ * 2. getGeneratorNodes: Generator nodes List for flows view.
+ * 3. getContainerNodes: Container nodes list for flows view.
+ * 4. getConsumerNodes: Consumer nodes list for flows view.
+ * 5. insertFlow: Inserts a flow
+ * 6. updateFlow: Updates a flow
+ * 7. deleteFlow: Deletes a flow
+ * 
+ * @requires Datasource/MySQLMngr
+ * Ernesto Cantú
  */
 const dataSource = require('../Datasource/MySQLMngr');
 
@@ -205,42 +218,5 @@ async function deleteFlow(flow){
     }
 }
 
-/**
- * Method that deletes flows by a given node
- * @param {*} node 
- * @param {*} region_id 
- * @returns 
- */
-async function deleteFlowsByNodeIn(node,region_id){
-    try{
-        //Delete from a02_flows where scenario_id = ? and region_id = ? and destiny = ? and destiny_type = ?
-        let query = deleteFlowsByNodeInQuery;
-        let params = [node.scenario_id,region_id,node.destiny,node.node_type]
-        
-        qResult = await dataSource.updateData(query,params);
-        return qResult;
-    }catch(err){
-        return err;
-    }
-}
 
-/**
- * Method that deletes flows by a given node
- * @param {*} node 
- * @param {*} region_id 
- * @returns 
- */
-async function deleteFlowsByNodeOut(node,region_id){
-    try{
-        //Delete from a02_flows where scenario_id = ? and region_id = ? and and origin = ? and origin_type = ?
-        let query = deleteFlowsByNodeOutQuery;
-        let params = [node.scenario_id,region_id,node.origin, node.origin_type]
-        
-        qResult = await dataSource.updateData(query,params);
-        return qResult;
-    }catch(err){
-        return err;
-    }
-}
-
-module.exports = {getFlows,getGeneratorNodes, getContainerNodes, getConsumerNodes,insertFlow,updateFlow,deleteFlow, deleteFlowsByNodeIn,deleteFlowsByNodeOut}
+module.exports = {getFlows,getGeneratorNodes, getContainerNodes, getConsumerNodes,insertFlow,updateFlow,deleteFlow}

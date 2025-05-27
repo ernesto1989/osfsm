@@ -1,5 +1,18 @@
 /**
  * File that holds all the possible catalog interactions required by the system.
+ * 
+ * Implemented Methods:
+ * 
+ * * 1. getFlowTypes: Gets the flow types from the database.
+ * * 2. getCapacityUnits: Gets the capacity units from the database.
+ * * 3. getTimeUnits: Gets the time units from the database.
+ * * 4. getContainerTypes: Gets the container types from the database.
+ * * 5. getConsumerTypes: Gets the consumer types from the database.
+ * 
+ * @module Service/catalogsService
+ * @requires Datasource/MySQLMngr
+ *  
+ * Ernesto Cantú
  */
 const dataSource = require('../Datasource/MySQLMngr');
 
