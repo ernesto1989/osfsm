@@ -17,11 +17,13 @@ const homeControllers = require('./Templates/homeController');
 const nodesControllers = require('./Templates/nodesController');
 const consumersControllers = require('./Templates/consumersController');
 const flowsControllers = require('./Templates/flowsController');
+const cconditionControllers = require('./Templates/cconditionController');
 const constants = require("../constants");
 const scenariosApi = require("./API/scenariosRest");
 const nodesApi = require("./API/nodesRest");
 const consumersRest = require("./API/consumersRest");
 const flowsRest = require("./API/flowsRest");
+const conditionEvalRest = require("./API/conditionEvaluationRest")
 
 const router = express.Router();
 
@@ -34,6 +36,7 @@ router.get(constants.contextURL, homeControllers.homePage);
 router.get(constants.contextURL + '/:scenarioId/nodes', nodesControllers.scenarioNodes);
 router.get(constants.contextURL + '/:scenarioId/consumers', consumersControllers.scenarioConsumers);
 router.get(constants.contextURL + '/:scenarioId/flows', flowsControllers.scenarioFlows);
+router.get(constants.contextURL + '/:scenarioId/ccondition', cconditionControllers.scenarioCurrentCondition);
 router.get(constants.contextURL+'/lang', userControllers.lang);
 
 
@@ -56,5 +59,8 @@ router.post(constants.contextURL + constants.apiURL + "/deleteConsumer",consumer
 router.get(constants.contextURL + constants.apiURL + "/getFlows/:scenarioId",flowsRest.getScenarioFlows);
 router.post(constants.contextURL + constants.apiURL + "/saveFlow",flowsRest.saveFlow);
 router.post(constants.contextURL + constants.apiURL + "/deleteFlow",flowsRest.deleteFlow);
+
+/* Condition Evaluation API routes */
+router.get(constants.contextURL + constants.apiURL + "/evaluate/:scenarioId",conditionEvalRest.computeCurrentState);
 
 module.exports = router;

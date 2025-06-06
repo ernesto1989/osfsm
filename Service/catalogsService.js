@@ -28,7 +28,7 @@ const getConsumerTypesQuery = "SELECT id,type FROM x04_consumer_types";
 async function getFlowTypes(){
     try{
         let query = getTypesQuery;
-        qResult = await dataSource.getData(query);
+        let qResult = await dataSource.getData(query);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -43,8 +43,8 @@ async function getCapacityUnits(){
     try{
         let query = getUnitsQuery;
         let params = ['capacity'];
-        qResult = await dataSource.getDataWithParams(query,params);
-        return qResult;
+        let qResult = await dataSource.getDataWithParams(query,params);
+        return  qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
     }
@@ -58,7 +58,7 @@ async function getTimeUnits(){
     try{
         let query = getUnitsQuery;
         let params = ['time'];
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -72,7 +72,7 @@ async function getTimeUnits(){
 async function getContainerTypes(){
     try{
         let query = getContainerTypesQuery;
-        qResult = await dataSource.getData(query);
+        let qResult = await dataSource.getData(query);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -86,7 +86,7 @@ async function getContainerTypes(){
 async function getConsumerTypes(){
     try{
         let query = getConsumerTypesQuery;
-        qResult = await dataSource.getData(query);
+        let qResult = await dataSource.getData(query);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);

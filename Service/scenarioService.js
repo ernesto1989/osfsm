@@ -51,7 +51,7 @@ async function getScenariosList(region_id){
     try{
         let query = "SELECT scenario_id,description from z01_scenarios where region_id = ?";
         let params = [region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -68,7 +68,7 @@ async function getScenarioSumary(scenarioId,region_id){
     try{
         let query = scenarioSumaryQuery;
         let params = [scenarioId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -86,7 +86,7 @@ async function getScenarioMap(scenarioId,region_id){
     try{
         let query = scenarioMapQuery;
         let params = [scenarioId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -104,7 +104,7 @@ async function cloneScenario(scenarioId,description,baseId,region_id){
     try{
         let query = 'call create_scenario(?,?,?,?)';
         let params = [scenarioId,description,baseId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         let status = qResult.rows[0][0].STATUS;
         if(status == 'OK'){
             return new dataSource.QueryResult(true,1,0,0,'');
@@ -125,7 +125,7 @@ async function cloneScenario(scenarioId,description,baseId,region_id){
     try{
         let query = 'call delete_scenario(?,?)';;
         let params = [scenarioId,region_id];
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         let status = qResult.rows[0][0].STATUS;
         if(status == 'OK'){
             return new dataSource.QueryResult(true,1,0,0,'');
@@ -146,7 +146,7 @@ async function getScenarioCapacityUnits(region_id,scenario_id){
     try{
         let query = "SELECT unit_value from x01_units where id = (select capacity_units from z01_scenarios where region_id = ? and scenario_id = ?)";
         let params = [region_id,scenario_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -162,7 +162,7 @@ async function getScenarioTimeUnits(region_id,scenario_id){
     try{
         let query = "SELECT unit_value from x01_units where id = (select time_units from z01_scenarios where region_id = ? and scenario_id = ?)";
         let params = [region_id,scenario_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);

@@ -45,7 +45,7 @@ async function getConsumers(scenarioId,region_id){
     try{
         let query = getConsumersQuery;
         let params = [scenarioId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -89,7 +89,7 @@ async function updateConsumer(node,region_id){
             WHERE scenario_id = ? and region_id = ? and node_id = ?;
         `;
         let params = [node.description,node.consumer_type, node.supply_requirement,node.supply_policy,node.scenario_id, region_id, node.node_id];
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,[],null,0,err);
@@ -106,7 +106,7 @@ async function deleteConsumer(node,region_id){
     try{
         let query = 'delete from a01c_consumer_nodes where scenario_id = ? and region_id = ? and node_id = ?';
         let params = [node.scenario_id,region_id,node.node_id]
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,[],null,0,err);

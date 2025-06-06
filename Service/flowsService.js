@@ -94,7 +94,7 @@ async function getFlows(scenarioId,region_id){
     try{
         let query = getFlowsQuery;
         let params = [scenarioId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -111,7 +111,7 @@ async function getGeneratorNodes(scenarioId,region_id){
     try{
         let query = selectGeneratorNodes;
         let params = [region_id,scenarioId]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -128,7 +128,7 @@ async function getContainerNodes(scenarioId,region_id){
     try{
         let query = selectContainerNodes;
         let params = [region_id,scenarioId]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -145,7 +145,7 @@ async function getConsumerNodes(scenarioId,region_id){
     try{
         let query = selectConsumerNodes;
         let params = [region_id,scenarioId]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -173,7 +173,7 @@ async function insertFlow(flow,region_id){
         else
             flow_type = 2; //variable
         let params =[flow.scenario_id, region_id,flow.origin, flow.origin_type, flow.destiny, flow.destiny_type, flow_type, flow.flow_desc,flow.current_flow, flow.fmax,flow.fmin];
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
        return new dataSource.QueryResult(false,null,0,0,err);
@@ -192,7 +192,7 @@ async function updateFlow(flow){
         // flow_desc = ?, current_flow = ?, fmax = ?, fmin = ? where id = ? 
         let params = [flow.flow_desc,flow.current_flow,flow.fmax,flow.fmin, flow.id];
         
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -211,7 +211,7 @@ async function deleteFlow(flow){
         let query = deleteFlowQuery;
         let params = [flow.id]
         
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return err;

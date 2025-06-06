@@ -47,7 +47,7 @@ async function getNodes(scenarioId,region_id){
     try{
         let query = getNodesQuery;
         let params = [scenarioId,region_id]
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -91,7 +91,7 @@ async function updateNode(node,region_id){
             WHERE scenario_id = ? and region_id = ? and node_id = ?;
         `;
         let params = [node.description,node.container_type, node.max_capacity,node.current_vol,node.min_capacity,node.scenario_id, region_id, node.node_id];
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,[],null,0,err);
@@ -108,7 +108,7 @@ async function deleteNode(node,region_id){
     try{
         let query = 'delete from a01b_container_nodes where scenario_id = ? and region_id = ? and node_id = ?';
         let params = [node.scenario_id,region_id,node.node_id]
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,[],null,0,err);

@@ -19,8 +19,29 @@
         let selectedScenario = 'BASE_CONDITION';
 
         $('document').ready(function(){
+            let tabs = new w2tabs(config.tabs)
+            query('#tab1').show()
+            query('#tab2').hide()
+            query('#tab3').hide()
             show_selected_scenario();
         });
+
+        let config = {
+            tabs: {
+                name: 'tabs',
+                box: '#tabs',
+                active: 'tab1',
+                tabs: [
+                    { id: 'tab1', text: '<%= __("scenario_summary_title_tab") %>' },
+                    { id: 'tab2', text: '<%= __("simulator_title_tab") %>' },
+                    { id: 'tab3', text: '<%= __("solution_title_tab") %>' },
+                ],
+                onClick(event) {
+                    query('#tab-example .tab-content').hide()
+                    query(`#tab-example #${event.target}`).show()
+                }
+            }
+        }
 
         window.open_window = function(required_window) {
             window.open('<%=home_url%>/'+ selectedScenario + '/'+required_window,required_window+'_'+ selectedScenario,'toolbar=no,location=no,status=no,menubar=no,resizable=yes,width='+screen.availWidth+',height='+screen.availHeight);
@@ -206,6 +227,29 @@
                         $('#scenario_nodes').text('<%= __("nodes_menu") %>:'+response.summary.container_nodes);
                         $('#scenario_consumers').text('<%= __("consumers_menu") %>:'+response.summary.consumer_nodes);
                         $('#scenario_flows').text('<%= __("flows_menu") %>:'+response.summary.flows);
+
+                        // var map = L.map('map').setView([25.69656518194606, -100.30537628127692], 13);
+
+                        // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        //     attribution: '&copy; OpenStreetMap contributors'
+                        // }).addTo(map);
+
+                        // // Add a marker
+                        // var marker = L.marker([25.69656518194606, -100.30537628127692]).addTo(map)
+                        //     .bindPopup('<%=region_name%>')
+                        //     .openPopup();
+
+                        // for(let i = 0; i<response.map.length;i++){
+                        //     let node = response.map[i];
+
+                        //     L.circle([node.Lat, node.Long], {
+                        //         color: 'red',
+                        //         fillColor: '#f03',
+                        //         fillOpacity: 0.5,
+                        //         radius: 1000
+                        //     }).addTo(map).bindPopup(node.node_id);
+                        // }
+                        
                     }
                 }
             });
@@ -291,85 +335,129 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4"><%=user_info.region_name%> - <%= __('welcome_message') %></h4>
                         <div id="tab-example" class="row">
-                            <div class="row" style="margin-top: 15px;">
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-bridge-water me-1"></i><div class="col" id="scenario_nodes"></div>
+                            <div id="tabs" style="width: 100%;"></div>
+                            <div id="tab1" class="tab-content">
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-xl-3 col-md-6" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <i class="col-sm-1 fa-solid fa-bridge-water me-1"></i><div class="col" id="scenario_nodes"></div>
+                                                    </div>
+                                                </div>
+                                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                                <a class="small text-black stretched-link" href="#" onclick="open_window('nodes')">View Details</a>
+                                                <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="card text-black mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                <i class="col-sm-1 fa-solid fa-hand-holding-droplet me-1"></i><div class="col" id="scenario_consumers"></div></div>
+                                                </div>
+                                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                                <a class="small text-black stretched-link" href="#" onclick="open_window('consumers')">View Details</a>
+                                                <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <i class="col-sm-1 fa-solid fa-faucet me-1"></i><div class="col" id="scenario_flows"></div>
                                                 </div>
                                             </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('nodes')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                                <a class="small text-black stretched-link" href="#" onclick="open_window('flows')">View Details</a>
+                                                <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <i class="col-sm-1 fa-solid fa-warning me-1"></i><div class="col" id="scenario_warnings">Warnings:2</div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                                <a class="small text-black stretched-link" href="#" onclick="open_window('warnings')">View Details</a>
+                                                <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                            <i class="col-sm-1 fa-solid fa-hand-holding-droplet me-1"></i><div class="col" id="scenario_consumers"></div></div>
-                                            </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('consumers')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-faucet me-1"></i><div class="col" id="scenario_flows"></div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('flows')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-warning me-1"></i><div class="col" id="scenario_warnings">Warnings:2</div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('warnings')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
+                                <div class="row">
+                                    <h4 class="mt-4">
+                                        <div id="map" style="height: 320px; width: 100%; "></div>
+                                    </h4>
                                 </div>
                             </div>
-                            <div class="row" style="margin-top: 15px;">
-                                <div class="col-xl-6 col-md-12" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-bridge-water me-1"></i><div class="col" id="current_situation">Current Situation</div>
-                                                </div>
+                            <div id="tab2" class="tab-content">
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-xl-4 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System State
                                             </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('ccondition')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_state">Draining</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-md-12">
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                Estimated Time to Reach Critical State
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_ct">100 days</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                Container Node Reaching CT.
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_critical_node">N02</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-md-12">
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                            <i class="col-sm-1 fa-solid fa-hand-holding-droplet me-1"></i><div class="col" id="scenario_consumers">Proposed Solution State</div></div>
+                                <div class="row">
+                                    <div class="col-xl-6 col-md-12">
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System's Inputs
                                             </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('consumers')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_ct">27 MM3</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-12" >
+                                        <div class="card text-black mb-4">
+                                            <div class="card-header">
+                                                System's Outputs
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col" id="cc_critical_node">37 MM3</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <h4 class="mt-4">
+                                        TRL Table
+                                    </h4>
+                            </div>
+                            <div id="tab3" class="tab-content">
+                                There is a solution
                             </div>
                         </div>
                     </div>

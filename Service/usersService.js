@@ -83,7 +83,7 @@ async function isValidUser(username, password) {
     try{
         let query = userQquery
         let params = [username];
-        qResult = await dataSource.getDataWithParams(query,params);
+        let qResult = await dataSource.getDataWithParams(query,params);
         let user = qResult.rows[0];
         if(user){
             let isEqual = await bcrypt.compare(password, user.password);
@@ -105,7 +105,7 @@ async function isValidUser(username, password) {
 async function getUsers(){
     try{
         let query = getUsersQuery;
-        qResult = await dataSource.getData(query);
+        let qResult = await dataSource.getData(query);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -135,7 +135,7 @@ async function insertUser(user){
             //( username, name, password, role_id, region_id)
             params =[user.username,user.name,password,user.role_id,user.region_id];
         }
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -155,7 +155,7 @@ async function changePass(user,newPass){
         let password = await bcrypt.hash(newPass,8)
         let params = [password,user];
                 
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);
@@ -173,7 +173,7 @@ async function deleteUser(user){
         let query = deleteUserQuery;
         let params = [user.id];
         
-        qResult = await dataSource.updateData(query,params);
+        let qResult = await dataSource.updateData(query,params);
         return qResult;
     }catch(err){
         return new dataSource.QueryResult(false,null,0,0,err);

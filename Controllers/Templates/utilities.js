@@ -33,15 +33,18 @@ async function getSessionInfo(req){
  * Method that initializes the capacity_units, time_units and types lists.
  */
 async function loadLists(){
-    flowTypes = (await catalogsService.getFlowTypes()).getRows();
-    cu = (await catalogsService.getCapacityUnits()).getRows();
-    tu = (await catalogsService.getTimeUnits()).getRows();
+    let flowTypes = (await catalogsService.getFlowTypes()).getRows();
+    let cu = (await catalogsService.getCapacityUnits()).getRows();
+    let tu = (await catalogsService.getTimeUnits()).getRows();
 
-    for(i=0;i<cu.length;i++)
+    for(let i=0;i<cu.length;i++)
         capacity_units.push(cu[i].unit_name);
 
-    for(i=0;i<tu.length;i++)
+    for(let i=0;i<tu.length;i++)
         time_units.push(tu[i].unit_name);
+    
+    for(let i = 0;i<flowTypes;i++)
+        flow_types.push(flowTypes[i].type)
 }
 
 loadLists();
