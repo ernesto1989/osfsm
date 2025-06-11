@@ -5,8 +5,7 @@
  * 
  * Implemented methods:
  * 
- * 1. getCurrentStateSummary: Gets a scenario's full current stat summary by its ID.
- * 2. computeCurrentState: Calls the Python Web Service to compute the Scenario's current state (simulator)
+ * 1. computeCurrentState: Calls the Python Web Service to compute the Scenario's current state (simulator)
  * 
  * @module Controllers/API/conditionEvaluationRest
  * @requires Service/scenarioService
@@ -17,47 +16,6 @@
 const conditionEvaluationService = require("../../Service/conditionEvaluationService")
 const utilities = require("../Templates/utilities")
 
-
-
-/**
- * Method that searches the current state summary on the database
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns Scenarios computed current state
- */
-async function getCurrentStateSummary(req,res){
-    try{
-        if (!req.session.isLoggedIn) {
-            let jsonError = {
-                "status"  : "Unauthorized",
-                "message" : "Need to login"
-            };
-            res.status(401);
-            res.send(jsonError);
-            return;
-        }
-        let session = await utilities.getSessionInfo(req);
-        let scenarioId = req.params.scenarioId;
-        let regionId = session.region_id;
-
-        //call the service to obtain current state
-
-        res.status(200);
-        res.json({
-            "status"  : "success",
-            "summary" : []//scenarioSumary.getRows()[0]
-        });
-    }catch(error){
-        let jsonError = {
-            "status"  : "error",
-            "message" : error.message
-        };
-        console.log(error);
-        res.status(500);
-        res.send(jsonError);
-    }
-}
 
 /**
  * Method that executes the Scenario's Current State Computing by
@@ -116,6 +74,5 @@ async function computeCurrentState(req,res){
 
 
 module.exports = {
-    getCurrentStateSummary,
     computeCurrentState
 }
