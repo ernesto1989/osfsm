@@ -1,381 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="/OSF/css/osf_style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <title><%= __('app_name') %></title>
-    <script type="module">
-        import { w2tabs, w2sidebar, query,  w2form, w2ui, w2popup, w2alert, w2grid, w2toolbar,w2confirm } from 'https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.es6.min.js'
-        
-        let selectedScenario = 'BASE_CONDITION';
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Node + EJS + Bulma App</title>
 
-        $('document').ready(function(){
-            show_selected_scenario();
-        });
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="./css/bulma-theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/w2ui@1.5.rc1/w2ui.min.css" />
 
-        window.open_window = function(required_window) {
-            window.open('<%=home_url%>/'+ selectedScenario + '/'+required_window,required_window+'_'+ selectedScenario,'toolbar=no,location=no,status=no,menubar=no,resizable=yes,width='+screen.availWidth+',height='+screen.availHeight);
-        };
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/w2ui@1.5.rc1/w2ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
 
-        /**
-         * Method that deletes the selected scenario.
-         * It shows a confirmation dialog before deleting the scenario.
-         */
-         function deleteScenario(){
-            let scenario = {'scenario_id':selectedScenario}
-            if(scenario.scenario_id === '<%=base_scenario%>'){
-                w2alert('<%= __("delete_base_scenario") %>');
-                return;
-            }
-            w2confirm({
-                msg: '<%= __("delete_scenario_msg") %>' + scenario.scenario_id,
-                title: '<%= __("delete_scenario_title") %>',
-                width: 450,        // width of the dialog
-                height: 220,       // height of the dialog
-                btn_yes: {
-                    text: 'yes',   // text for yes button (or yes_text)
-                    class: 'btn-danger',     // class for yes button (or yes_class)
-                    style: 'background-color:red;',     // style for yes button (or yes_style)
-                    onClick: null  // callBack for yes button (or yes_callBack)
-                },
-                btn_no: {
-                    text: '<%= __("no") %>',    // text for no button (or no_text)
-                    class: '',     // class for no button (or no_class)
-                    style: '',     // style for no button (or no_style)
-                    onClick: null  // callBack for no button (or no_callBack)
-                },
-                callBack: function(answer){
-                    if(answer === '<%= __("yes") %>'){
-                        $.ajax({
-                            url:'<%=home_url%>/api/deleteScenario', 
-                            type:'POST',
-                            data: JSON.stringify(scenario), 
-                            dataType:"json",
-                            contentType:"application/json; charset=utf-8",
-                            success:function(response){
-                                if(response)
-                                    window.location.reload();
-                                else
-                                    alert("Something went wrong")
-                            }
-                        });
-                    } 
-                }
-            });            
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 3.25rem;
+      bottom: 0;
+      left: 0;
+      width: 240px;
+      min-width: 240px;
+      overflow-y: auto;
+      background-color: #f5f5f5;
+      border-right: 1px solid #dbdbdb;
+      padding: 1rem;
+    }
+
+    #main-content {
+      position: absolute;
+      top: 3.25rem;
+      left: 50px;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .equal-height {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .theme-header a {
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .apexcharts-canvas {
+      height: 200px !important;
+    }
+  </style>
+
+  <script>
+    let selectedScenario = '';
+
+    $(document).ready(function () {
+      $(".navbar-burger").click(function () {
+        var target = $(this).data("target");
+        $("#" + target).toggleClass("is-active");
+        $(this).toggleClass("is-active");
+      });
+
+      $('#newScenario').on('click', function () {
+        $('#newModal').addClass('is-active');
+      });
+
+      $('#closeModalBtn, #closeModalFooter, .modal-background').on('click', function () {
+        $('#newModal').removeClass('is-active');
+      });
+
+      $('#sidebar-list').on('click', 'a', function (e) {
+        e.preventDefault();
+        const scenarioId = $(this).data('id');
+        handleScenarioClick(scenarioId);
+      });
+
+      handleScenarioClick('scenario1');
+
+      $('#deleteScenario').on('click', function () {
+        if (!selectedScenario) return;
+
+        // Set the modal content
+        $('#scenarioToDelete').text(selectedScenario);
+        $('#deleteConfirmModal').addClass('is-active');
+      });
+
+      // Close modal on cancel
+      $('#cancelDeleteBtn, #cancelDeleteFooter, .modal-background').on('click', function () {
+        $('#deleteConfirmModal').removeClass('is-active');
+      });
+
+      // Confirm deletion
+      $('#confirmDeleteBtn').on('click', function () {
+        $(`#sidebar-list a[data-id="${selectedScenario}"]`).parent().remove();
+        $('#deleteConfirmModal').removeClass('is-active');
+
+        selectedScenario = '';
+        $('#selected_scenario').text("No scenario selected");
+        $('#donut-chart, #bar-chart').empty();
+      });
+
+      $('#submitScenarioBtn').on('click', function () {
+        const name = $('#scenarioName').val().trim();
+
+        if (!name) {
+          $('#scenarioNameError').show(); // Show the error
+          $('#scenarioName').addClass('is-danger'); // Add red border
+          return;
+        } else {
+          $('#scenarioNameError').hide(); // Hide the error if present
+          $('#scenarioName').removeClass('is-danger');
         }
 
-        /**
-         * Method that clears the new scenario form.
-         * It is called when the user clicks on the reset button.
-         */
-        function clearNewScenarioForm(){
-            //let selectedScenario = scenarios.get('<%=base_scenario%>')
-            let record = {
-                new_scenario_id : '',
-                new_description: '',
-                new_base_scenario : {id:'<%=scenarios[0].scenario_id%>',text:'<%=scenarios[0].scenario_id%>'}
-            };
-            w2ui.scenarioCreator.record = record;
-            w2ui.scenarioCreator.refresh();
-        }
+        const description = $('#scenarioDescription').val().trim();
+        const baseScenario = $('#baseScenarioSelect').val();
 
-        /**
-         * Method that handles the creation of a new scenario.
-         * First, opens a popup with the corresponding Creation Form.
-         * It initializes the form and the fields.
-         * It also defines the actions for the buttons.
-         */
-        function openNewScenarioPopup(){
-            
-            let cForm = new w2form({
-                name: 'scenarioCreator',
-                style: 'border: 0px; background-color: transparent;',
-                fields: [
-                    { field: 'new_scenario_id', type: 'text', required: true, editable:true, 
-                        html: { label: '<%= __("scenario_id_title") %>', attr: 'style="width: 100%"; placeholder="Give the Scenario a name" ' }
-                    },
-                    { field: 'new_description', type: 'textarea', required: false, editable:true, 
-                        html: { label: '<%= __("scenario_description_title") %>', attr: 'style="width: 100%;" placeholder="About this scenario" ' }
-                    },
-                    { field: 'new_base_scenario', type: 'list',
-                        html: { label: '<%= __("base_scenario_title") %>', attr: 'style="width: 100%"' },
-                        options: { items: [
-                            <%for(let i = 0; i<scenarios.length;i++){%>
-                            {id:'<%=scenarios[i].scenario_id%>',text:'<%=scenarios[i].scenario_id%>'},
-                            <%}%>
-                        ]},
-                    }
-                ],
-                onChange:function(event){
-                    let modifiedField = event.target;
-                    console.log("currently not supporting empty scenarios....")
-                    // if(modifiedField === 'new_base_scenario'){
-                    //     let selectedBaseScenarioId = w2ui.scenarioCreator.record.new_base_scenario;
-                    //     let selectedScenario = scenarios.get(selectedBaseScenarioId.text);
-                    //     w2ui.scenarioCreator.record.new_capacity_units = {id:selectedScenario.capacity_units,text:selectedScenario.capacity_units};
-                    //     w2ui.scenarioCreator.record.new_time_units = {id:selectedScenario.time_units,text:selectedScenario.time_units};
-                    //     w2ui.scenarioCreator.refresh();
-                    //     cForm.show('new_base_scenario');
-                    // }
+        console.log('Creating Scenario:', { name, description, baseScenario });
 
-                    // if(modifiedField === 'new_type'){
-                    //     let selectedType = cForm.record.new_type;
-                        
-                    //     if(selectedType.id === 2){
-                    //         //empty
-                    //         cForm.hide('new_base_scenario');
-                    //         w2ui.scenarioCreator.enable('new_capacity_units','new_time_units');
-                    //     }
-                    //     if(selectedType.id === 1){
-                    //         let selectedBaseScenarioId = w2ui.scenarioCreator.record.new_base_scenario;
-                    //         let selectedScenario = scenarios.get(selectedBaseScenarioId.text);
-                    //         w2ui.scenarioCreator.record.new_capacity_units = {id:selectedScenario.capacity_units,text:selectedScenario.capacity_units};
-                    //         w2ui.scenarioCreator.record.new_time_units = {id:selectedScenario.time_units,text:selectedScenario.time_units};
-                    //         w2ui.scenarioCreator.disable('new_capacity_units','new_time_units');
-                    //         w2ui.scenarioCreator.refresh();
-                    //         cForm.show('new_base_scenario');
+        $('#newModal').removeClass('is-active');
+      });
+    });
 
-                    //     }
-                    // }
-                },
-                actions: {
-                    Reset() { 
-                        clearNewScenarioForm();
-                    },
-                    Save() { 
-                        this.validate(); 
-                        let scenario = {
-                            scenario_id:cForm.record.new_scenario_id,
-                            type:1, //hardcoded for now...
-                            description:cForm.record.new_description,
-                            base_scenario_id: cForm.record.new_base_scenario.id
-                        }
+    function toggleTheme() {
+      $('body').toggleClass('dark-mode light-mode');
+    }
 
-                        $.ajax({
-                            url:'<%=home_url%>/api/createScenario', 
-                            type:'POST',
-                            data: JSON.stringify(scenario), 
-                            dataType:"json",
-                            contentType:"application/json; charset=utf-8",
-                            success:function(response){
-                                if(response)
-                                    window.location.reload();
-                                else
-                                    alert("Something went wrong")
-                            }
-                        });
-                    }
-                }
-            });
-            
-            w2popup.open({
-                title   : '<%= __("new_scenario_title") %>',
-                body    : '<div id="newScenarioForm" style="width: 100%; height: 100%;"></div>',
-                style   : 'padding: 15px 0px 0px 0px',
-                width   : 400,
-                height  : 420,
-                showMax : false
-            })
-            .then((event) => {
-                
-                w2ui.scenarioCreator.render('#newScenarioForm');
-                clearNewScenarioForm();
-            });
-        }
+    function handleScenarioClick(scenarioId) {
+      selectedScenario = scenarioId;
+      $('#sidebar-list a').removeClass('is-selected');
+      $(`#sidebar-list a[data-id="${scenarioId}"]`).addClass('is-selected');
 
+      $('#donut-chart').empty();
+      $('#bar-chart').empty();
+      renderDonutChart();
+      renderBarChart();
+    }
 
-        function show_selected_scenario(){
-            //alert(selectedScenario)
-            $.ajax({
-                url:'<%=home_url%>/api/getSummary/' +selectedScenario, 
-                type:'GET',
-                dataType:"json",
-                contentType:"application/json; charset=utf-8",
-                success:function(response){
-                    if(response){
-                        $('#scenario_nodes').text('<%= __("nodes_menu") %>:'+response.summary.container_nodes);
-                        $('#scenario_consumers').text('<%= __("consumers_menu") %>:'+response.summary.consumer_nodes);
-                        $('#scenario_flows').text('<%= __("flows_menu") %>:'+response.summary.flows);
-                    }
-                }
-            });
-        }
+    function renderDonutChart(systemPercent = 90.3, unusedPercent = 9.7) {
+      const options = {
+        chart: { type: 'donut', height: 200 },
+        labels: ['System State', 'Unused Capacity'],
+        series: [systemPercent, unusedPercent],
+        colors: ['green', 'gray'],
+        dataLabels: { formatter: val => val.toFixed(1) + '%' },
+        legend: { position: 'bottom' }
+      };
+      new ApexCharts(document.querySelector("#donut-chart"), options).render();
+    }
 
-        let toolbar = new w2toolbar({
-            box: '#toolbar',
-            name: 'toolbar',
-            items: [
-                { type: 'button', id: 'home', text: '<%= __("app_name") %>', icon: 'fa fa-house' },
-                { type: 'break' },
-                { type: 'button', id: 'new', text: '<%= __("create_scenario_button") %>', icon: 'fa fa-pencil' },
-                { type: 'button', id: 'delete', text: '<%= __("delete_scenario_button") %>', icon: 'fa fa-trash'},
-                { type: 'spacer' },
-                { type: 'menu', id: 'user', text: '<%=user_info.name%>', icon: 'fa fa-user', items:[
-                    { type: 'button', id: 'region', text: '<%=user_info.region_name%>', icon: 'fa fa-circle-info' },
-                    //{ type: 'button', id: 'pref', text: 'My Preferences', icon: 'fa fa-user' },
-                    { type: 'button', id: 'sout', text: 'Sign Out', icon: 'fa fa-user-slash' }
-                ] 
-            }],
-            onClick(event) {
-                
-                let selectedOp = event.target;
-                
-                if(selectedOp === 'home'){
-                    window.location.reload();
-                }
-                if(selectedOp === 'new'){
-                    openNewScenarioPopup();
-                }
-                if(selectedOp === 'delete'){
-                    //deleting selected scenario.
-                    deleteScenario();
-                }
-                if(selectedOp === 'user:pref'){
-                    //preferences
-                    console.log("Preferences");
-                }
-                if(selectedOp === 'user:region'){
-                    //preferences
-                    console.log("My region is: <%=user_info.region_name%>");
-                }
-                if(selectedOp === 'user:sout'){
-                    window.location.href = '<%=home_url%>/logout';
-                }
-            }
-        });
+    function renderBarChart() {
+      const nodeMetadata = {
+        N01: { state: 'Filling', timeToLimit: 12 },
+        N02: { state: 'Stable', timeToLimit: '--' },
+        N03: { state: 'Draining', timeToLimit: 9 },
+        N04: { state: 'Stable', timeToLimit: '--' },
+        N05: { state: 'Draining', timeToLimit: 7 },
+        N06: { state: 'Filling', timeToLimit: 10 }
+      };
 
-        
-        let sidebar = new w2sidebar({
-            box: '#sidebar',
-            name: 'sidebar',
-            style:'height:100%;',
-            nodes: [
-                <%for(let i = 0; i< scenarios.length;i++) {%>
-                { id: '<%=scenarios[i].scenario_id%>', text: '<%=scenarios[i].description%>'},//,  expanded: false,
-                <%}%>
-            ],
-            onClick:function(evt){
-                let id = evt.target;
-                selectedScenario = id;
-                show_selected_scenario();
-                //alert("Selected: " + scenario);
-                //config all UI to selected scenario
+      const stateIcons = {
+        'Filling': '🟨',
+        'Draining': '🟥',
+        'Stable': '🟩'
+      };
 
-                //select tab #01
-                console.log(id)
-            }
-        });
-    </script>
+      const options = {
+        chart: {
+          type: 'bar',
+          height: 200,
+          stacked: false,
+          toolbar: { show: false }
+        },
+        series: [
+          { name: 'Min Vol (MM3)', data: [50, 60, 55, 40, 45, 50] },
+          { name: 'Current Vol (MM3)', data: [90, 130, 115, 100, 105, 110] },
+          { name: 'Max Vol (MM3)', data: [120, 150, 140, 125, 130, 135] }
+        ],
+        xaxis: {
+          categories: ['N01', 'N02', 'N03', 'N04', 'N05', 'N06']
+        },
+        tooltip: {
+          custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+            const node = w.config.xaxis.categories[dataPointIndex];
+            const min = w.config.series[0].data[dataPointIndex];
+            const curr = w.config.series[1].data[dataPointIndex];
+            const max = w.config.series[2].data[dataPointIndex];
+            const meta = nodeMetadata[node] || { state: 'N/A', timeToLimit: 'N/A' };
+
+            const icon = stateIcons[meta.state] || '';
+            const ttl = meta.timeToLimit;
+            const warning = (typeof ttl === 'number' && ttl <= 10) ? '<span style="color:red">⚠️</span>' : '';
+
+            return `
+              <div style="padding: 8px; font-size: 0.9rem; line-height: 1.4">
+                <strong>${node} ${icon}</strong><br/>
+                <em>State:</em> ${meta.state}<br/>
+                <em>Time to Limit:</em> ${ttl} hrs ${warning}<br/>
+                <em>Min:</em> ${min} MM3<br/>
+                <em>Current:</em> ${curr} MM3<br/>
+                <em>Max:</em> ${max} MM3
+              </div>
+            `;
+          }
+        },
+        legend: { position: 'bottom' },
+        colors: ['#66b3ff', '#3366cc', '#003399']
+      };
+
+      new ApexCharts(document.querySelector("#bar-chart"), options).render();
+    }
+
+    function openNodesWindow() {
+      alert(`Opening ${selectedScenario} nodes`);
+    }
+
+    function openCurrentState() {
+      alert(`Opening ${selectedScenario} current state analysis`);
+    }
+
+    
+  </script>
 </head>
-<body>
-    <div class="container-fluid">
-        <div class="row" style="height:7%;">
-            <div id="toolbar">
-            </div>
-        </div>
-        <div class="row" id="contenido">
-            <div class="col-sm-2 col-md-2" id="sidebar" style="position:relative; padding: 2px; margin-left: -20px;height:100%">
-            </div>
-            <div class="col-sm-10 col-md-10" id="main-content" style="height: 100%;position:relative;left:10px;">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h4 class="mt-4"><%=user_info.region_name%> - <%= __('welcome_message') %></h4>
-                        <div id="tab-example" class="row">
-                            <div class="row" style="margin-top: 15px;">
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-bridge-water me-1"></i><div class="col" id="scenario_nodes"></div>
-                                                </div>
-                                            </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('nodes')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                            <i class="col-sm-1 fa-solid fa-hand-holding-droplet me-1"></i><div class="col" id="scenario_consumers"></div></div>
-                                            </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('consumers')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-faucet me-1"></i><div class="col" id="scenario_flows"></div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('flows')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-warning me-1"></i><div class="col" id="scenario_warnings">Warnings:2</div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('warnings')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-top: 15px;">
-                                <div class="col-xl-6 col-md-12" >
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <i class="col-sm-1 fa-solid fa-bridge-water me-1"></i><div class="col" id="current_situation">Current Situation</div>
-                                                </div>
-                                            </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('ccondition')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-md-12">
-                                    <div class="card text-black mb-4">
-                                        <div class="card-body">
-                                            <div class="row">
-                                            <i class="col-sm-1 fa-solid fa-hand-holding-droplet me-1"></i><div class="col" id="scenario_consumers">Proposed Solution State</div></div>
-                                            </div>
-                                        <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-black stretched-link" href="#" onclick="open_window('consumers')">View Details</a>
-                                            <div class="small text-black"><i class="fas fa-angle-right"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </div>
+
+<body class="light-mode">
+
+  <!-- Navbar -->
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item has-text-weight-bold" href="/">MyApp</a>
+      <a class="navbar-item" id="newScenario">
+        <span class="icon"><i class="fas fa-plus"></i></span>
+        <span>New Scenario</span>
+      </a>
+      <a class="navbar-item" id="deleteScenario">
+        <span class="icon"><i class="fas fa-trash-alt"></i></span>
+        <span>Delete Scenario</span>
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="main-navbar">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </a>
     </div>
+    <div id="main-navbar" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">Settings</a>
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item">Profile</a>
+            <a class="navbar-item">Account</a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" onclick="toggleTheme()">Toggle Dark Mode</a>
+            <a class="navbar-item">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Modal -->
+  <div class="modal" id="newModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create New Scenario</p>
+        <button class="delete" aria-label="close" id="closeModalBtn"></button>
+      </header>
+
+      <section class="modal-card-body">
+        <form id="scenarioForm">
+          <!-- Scenario Name -->
+          <div class="field">
+            <label class="label">Scenario Name <span class="has-text-danger">*</span></label>
+            <div class="control">
+              <input class="input" type="text" id="scenarioName" placeholder="Enter scenario name" required>
+            </div>
+            <p class="help is-danger" id="scenarioNameError" style="display: none;">Scenario name is required.</p>
+          </div>
+
+          <!-- Description -->
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" id="scenarioDescription" placeholder="Optional description" rows="3"
+                style="resize: none;"></textarea>
+            </div>
+          </div>
+
+          <!-- Base Scenario -->
+          <div class="field">
+            <label class="label">Base Scenario</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="baseScenarioSelect">
+                  <option value="">Empty Scenario (File Upload)</option>
+                  <option value="scenario1">Scenario 1</option>
+                  <option value="scenario2">Scenario 2</option>
+                  <!-- More options can be dynamically populated -->
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <footer class="modal-card-foot is-justify-content-flex-end">
+        <button class="button is-primary" id="submitScenarioBtn">Create</button>
+        <button class="button" id="closeModalFooter">Cancel</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="deleteConfirmModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Delete Scenario</p>
+        <button class="delete" aria-label="close" id="cancelDeleteBtn"></button>
+      </header>
+      <section class="modal-card-body">
+        <p>Are you sure you want to delete the scenario: <strong id="scenarioToDelete"></strong>?</p>
+      </section>
+      <footer class="modal-card-foot is-justify-content-flex-end">
+        <button class="button" id="cancelDeleteFooter">Cancel</button>
+        <button class="button is-danger" id="confirmDeleteBtn">Delete</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <p class="menu-label has-text-weight-bold mt-4 ml-2">Scenarios</p>
+    <ul class="menu-list" id="sidebar-list">
+      <li><a href="#" data-id="scenario1">Scenario 1</a></li>
+      <li><a href="#" data-id="scenario2">Scenario 2</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+
+    <div class="columns is-multiline mb-4">
+      <!-- Nodes -->
+      <div class="column is-one-quarter">
+        <div class="card card-metric">
+          <div class="card-content has-text-centered">
+            <p class="title is-6">Nodes: <strong>6</strong></p>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">View Details <span class="icon"><i
+                  class="fas fa-angle-right"></i></span></a>
+          </footer>
+        </div>
+      </div>
+
+      <!-- Consumers -->
+      <div class="column is-one-quarter">
+        <div class="card card-metric">
+          <div class="card-content has-text-centered">
+            <p class="title is-6">Consumers: <strong>1</strong></p>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">View Details <span class="icon"><i
+                  class="fas fa-angle-right"></i></span></a>
+          </footer>
+        </div>
+      </div>
+
+      <!-- Flows -->
+      <div class="column is-one-quarter">
+        <div class="card card-metric">
+          <div class="card-content has-text-centered">
+            <p class="title is-6">Flows: <strong>11</strong></p>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">View Details <span class="icon"><i
+                  class="fas fa-angle-right"></i></span></a>
+          </footer>
+        </div>
+      </div>
+
+      <!-- Warnings -->
+      <div class="column is-one-quarter">
+        <div class="card card-metric">
+          <div class="card-content has-text-centered">
+            <p class="title is-6">Warnings: <strong>2</strong></p>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">View Details <span class="icon"><i
+                  class="fas fa-angle-right"></i></span></a>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="subtitle has-text-weight-bold">Current State Details <a>View Details</a></h2>
+
+    <div id="scenario-content">
+      <div class="columns">
+        <!-- DONUT CHART-->
+        <div class="column is-half">
+          <div class="box equal-height">
+            <div class="theme-header has-text-centered has-text-weight-bold p-2">
+              <a onclick="openNodesWindow()">Current Vol.</a>
+            </div>
+            <div id="donut-chart"></div>
+          </div>
+        </div>
+        <!-- BAR CHART-->
+        <div class="column is-half">
+          <div class="box equal-height">
+            <div class="theme-header has-text-centered has-text-weight-bold p-2">
+              <a onclick="openNodesWindow()">Nodes</a>
+            </div>
+            <div id="bar-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
 </body>
+
 </html>
