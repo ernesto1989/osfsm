@@ -5,7 +5,7 @@
 const { __ } = require("i18n");
 const constants = require("../../constants");
 const scenariosService = require("../../Service/scenarioService")
-const catalogsService = require("../../Service/catalogsService")
+//const catalogsService = require("../../Service/catalogsService")
 const utils = require("./utilities")
 
 
@@ -26,10 +26,6 @@ async function index(req,res){
  * @param {Object} res Server Response
  */
 async function homePage(req,res){
-    const sessionData = req.session;
-    if (!sessionData.isLoggedIn) {
-        return res.redirect(constants.contextURL+"/login");
-    }
     let session = await utils.getSessionInfo(req);
 
     let scenariosList = [];

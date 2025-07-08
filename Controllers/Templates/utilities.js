@@ -10,7 +10,15 @@ let flow_types = [];
 
 /**
  * Method that extracts the user from the given request.
+ * specifically, it extracts:
+ * 
+ * 1. username
+ * 2. users name
+ * 3. role id
+ * 4. role name (or profile)
+ * 
  * @param {*} req user's request.
+ * @returns {Object} session object with the user information.
  */
 async function getSessionInfo(req){
     const user = req.session.user;

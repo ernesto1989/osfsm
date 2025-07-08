@@ -11,30 +11,26 @@
  * Ernesto Cantú
  * 07/10/2024
  */
-const constants = require("./constants")
+const constants = require("./constants").default
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const i18n = require('i18n');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-//const socketServer = require("./socketserver");
 const session = require('express-session');
 const router = require("./Controllers/router");
 
 const SECRET = process.env.SECRET;
 
-/**
- * WebSocket configuration function.
- * @param {Object} server 
- */
-function configureWebSocket(server){
-    //socketServer.initWebSocket(server);   
-    console.log("Nothing here yet");
-}
 
 /**
- * Session configuration function.
+ * Session configuration function. First if sets the session configuration object.
+ * After it, it creates a middleware that will catch all requests and check the Request url.
+ * 
+ * If request url is one of the given public paths, it will skip the session middleware (provided in the router file).
+ * If the request url is not one of the public paths, it will use the session middleware to handle the session.
+ * 
  * @param {Object} app
  */
 function configureSecurity(app){
@@ -44,15 +40,12 @@ function configureSecurity(app){
         saveUninitialized: false,
     }));
 
-    //this middleware checks the url path and applies session only to specific routes
-    //This is to avoid session creation for public routes like login, logout, lang and public
+    const contextURL = constants.contextURL;
     app.use((req, res, next) => {
-        if(req.path.startsWith('/OSF/login') || req.path.startsWith('/OSF/logout') 
-            || req.path.startsWith('/OSF/lang/') || req.path.startsWith('/public/')) {    
-            // Allow access to these paths without session
+        if(req.path.startsWith(contextURL + '/login') || req.path.startsWith(contextURL + '/logout') 
+            || req.path.startsWith(contextURL + '/lang/') || req.path.startsWith('/public/')) {    
             next();
         } else{
-            // if the path is not one of the public ones, use session middleware, which will be applied to all other routes
             session()(req,res,next); // Use session middleware for other routes
         }
     });
@@ -106,7 +99,9 @@ function configureInternationalization(app){
 }
 
 /**
- * Static files and views configuration function.
+ * Method that configures EJS as template engine and sets the static files folder to "/public".
+ * It also sets the router to handle the requests.
+ * 
  * @param {*} app 
  */
 function configStaticFilesAndVies(app){
@@ -133,11 +128,11 @@ function configureServer(app){
  */
 function createServer(){
     const app = express();
-    configureServer(app);
-    configureSecurity(app);
-    configureInternationalization(app);
-    configStaticFilesAndVies(app);
-    const server = require('http').createServer(app);
+    configureServer(app); //body parser, corse and cookie parser
+    configureSecurity(app); //session handling and security middleware
+    configureInternationalization(app); //language support
+    configStaticFilesAndVies(app); // template engine, static files and router
+    const server = require('http').createServer(app); // runs server with express app
     return server;
 }
 
@@ -152,9 +147,7 @@ function createServer(){
  * @param {Object} app 
  */
 function initWebProject(){
-    const server = createServer();
-    configureWebSocket(server);
-    
+    const server = createServer();    
     server.listen(constants.port, () => {
         console.log(`OSF Scenario Manager service running on port ${constants.port}`);
     });
