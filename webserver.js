@@ -43,6 +43,19 @@ function configureSecurity(app){
         resave: false,
         saveUninitialized: false,
     }));
+
+    //this middleware checks the url path and applies session only to specific routes
+    //This is to avoid session creation for public routes like login, logout, lang and public
+    app.use((req, res, next) => {
+        if(req.path.startsWith('/OSF/login') || req.path.startsWith('/OSF/logout') 
+            || req.path.startsWith('/OSF/lang/') || req.path.startsWith('/public/')) {    
+            // Allow access to these paths without session
+            next();
+        } else{
+            // if the path is not one of the public ones, use session middleware, which will be applied to all other routes
+            session()(req,res,next); // Use session middleware for other routes
+        }
+    });
 }
 
 /**
@@ -98,7 +111,6 @@ function configureInternationalization(app){
  */
 function configStaticFilesAndVies(app){
     app.set('view engine', 'ejs');
-
     app.use(express.static('./public'));
     app.use(router);
 }
