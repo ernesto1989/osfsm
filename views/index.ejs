@@ -168,14 +168,15 @@
           $("#scenario_consumers").text(`Consumers: ${response.summary.consumer_nodes || 0}`);
           $("#scenario_flows").text(`Flows: ${response.summary.flows || 0}`);  
           $("#scenario_warnings").text(`Warnings: ${response.summary.warnings || 0}`);
-          $("#scenario_state").text(`(${response.summary.system_state} in ${response.summary.critical_time} ${response.summary.time_units})`);
+          if(response.summary.risk_node)
+            $("#scenario_state").text(`(Risk: ${response.summary.risk_node} is ${response.summary.system_state} in ${response.summary.critical_time} ${response.summary.time_units})`);
 
           let currentState = response.summary.current_vol;
           $('#donut-chart').empty();
           renderDonutChart(currentState,100 - currentState);
 
           $('#bar-chart').empty();
-          renderBarChart(response.nodes_status);
+          renderBarChart(response.nodes_status,response.summary.capacity_units, response.summary.time_units);
         },
         error: function (xhr, status, error) {
           console.error('Error selecting scenario:', error);
@@ -211,7 +212,7 @@
       new ApexCharts(document.querySelector("#donut-chart"), options).render();
     }
 
-    function renderBarChart(nodes) {
+    function renderBarChart(nodes, capacity_units, time_units) {
       const nodeMetadata = {};
       const names = [];
       const mins=[];
@@ -244,9 +245,9 @@
           toolbar: { show: false }
         },
         series: [
-          { name: 'Min Vol (MM3)', data: mins },
-          { name: 'Current Vol (MM3)', data: currents },
-          { name: 'Max Vol (MM3)', data: maxs }
+          { name: `Min Vol (${capacity_units})`, data: mins },
+          { name: `Current Vol (${capacity_units})`, data: currents },
+          { name: `Max Vol (${capacity_units})`, data: maxs }
         ],
         xaxis: {
           categories: names
@@ -267,10 +268,10 @@
               <div style="padding: 8px; font-size: 0.9rem; line-height: 1.4">
                 <strong>${node} ${icon}</strong><br/>
                 <em>State:</em> ${meta.state}<br/>
-                <em>Time to Limit:</em> ${ttl} hrs ${warning}<br/>
-                <em>Min:</em> ${min} MM3<br/>
-                <em>Current:</em> ${curr} MM3<br/>
-                <em>Max:</em> ${max} MM3
+                <em>Time to Limit:</em> ${ttl} ${time_units} ${warning}<br/>
+                <em>Min:</em> ${min} ${capacity_units}<br/>
+                <em>Current:</em> ${curr} ${capacity_units}<br/>
+                <em>Max:</em> ${max} ${capacity_units}
               </div>
             `;
           }
