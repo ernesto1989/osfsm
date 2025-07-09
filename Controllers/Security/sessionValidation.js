@@ -11,6 +11,7 @@
  * It might change in the future, but for now it works this way.
  */
 
+const constants = require("../../constants");
 
 /**
  * Middleware to validate user session and authentication on UI

@@ -35,26 +35,16 @@ const utilities = require("../Templates/utilities")
  */
 async function getScenarioSumary(req,res){
     try{
-        if (!req.session.isLoggedIn) {
-            let jsonError = {
-                "status"  : "Unauthorized",
-                "message" : "Need to login"
-            };
-            res.status(401);
-            res.send(jsonError);
-            return;
-        }
         let session = await utilities.getSessionInfo(req);
         let scenarioId = req.params.scenarioId;
         let regionId = session.region_id;
         const scenarioSumary = await scenarioService.getScenarioSumary(scenarioId,regionId);
-        const scenarioMap = await scenarioService.getScenarioMap(scenarioId,regionId);
-
+        const scenarioNodes = await scenarioService.getScenarioNodesSummary(scenarioId,regionId);
         res.status(200);
         res.json({
             "status"  : "success",
             "summary" : scenarioSumary.getRows()[0],
-            "map": scenarioMap.getRows()
+            "nodes_status" : scenarioNodes.getRows(),
         });
     }catch(error){
         let jsonError = {

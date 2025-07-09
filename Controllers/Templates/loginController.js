@@ -31,9 +31,7 @@ async function getLogin(req,res){
  */
 async function postLogin(req,res){
     const { username, password } = req.body;
-
     const user = await userServices.isValidUser(username, password);
-
     // Authenticate user
     if (user) {
         req.session.isLoggedIn = true;
@@ -42,15 +40,17 @@ async function postLogin(req,res){
             user.region = { id: user.region_id, name: user.region_name };
         }
         req.session.user = user;
-
         res.redirect(constants.contextURL);
     } else {
-        res.redirect(constants.contextURL+'/login');
+        res.redirect(constants.contextURL+'/login'); //how do I notify that the user is not valid?
     }
 }
 
 /**
  * Method that handles the logout request.
+ * 
+ * It just destroys the session and redirects to the login page.
+ * Nothing so fancy here.
  * 
  * @param {Object} req Client Request
  * @param {Object} res Server Response

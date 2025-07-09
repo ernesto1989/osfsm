@@ -12,7 +12,7 @@ const constants = require("../../constants")
  * @param {*} res 
  */
 async function lang(req,res){
-    res.render('lang');
+    res.render('lang'); // must include the lang.ejs file in views folder
 }
 
 

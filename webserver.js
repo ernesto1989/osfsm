@@ -11,7 +11,7 @@
  * Ernesto Cantú
  * 07/10/2024
  */
-const constants = require("./constants").default
+const constants = require("./constants")
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');

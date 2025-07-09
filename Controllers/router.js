@@ -33,9 +33,9 @@ router.get(constants.contextURL,security.authUser, homeControllers.homePage);
 
 
 /* Scenarios API routes */
-router.get(constants.contextURL + constants.apiURL + "/getSummary/:scenarioId",authAPI,scenariosApi.getScenarioSumary);
-router.post(constants.contextURL + constants.apiURL + "/createScenario",authAPI,scenariosApi.createScenario);
-router.post(constants.contextURL + constants.apiURL + "/deleteScenario",authAPI,scenariosApi.deleteScenario);
+router.get(constants.contextURL + constants.apiURL + "/getSummary/:scenarioId",security.authAPI,scenariosApi.getScenarioSumary);
+router.post(constants.contextURL + constants.apiURL + "/createScenario",security.authAPI,scenariosApi.createScenario);
+router.post(constants.contextURL + constants.apiURL + "/deleteScenario",security.authAPI,scenariosApi.deleteScenario);
 
 
 module.exports = router;

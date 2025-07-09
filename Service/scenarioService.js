@@ -5,36 +5,45 @@ const dataSource = require('../Datasource/MySQLMngr');
 const scenarioSumaryQuery = 
 `   SELECT 
         z01.scenario_id,
-        z01.cdate,
         z01.description,
-        z01.\`type\`,
-        z01.capacity_units,
-        (select unit_value from x01_units x01 where x01.id = z01.capacity_units) as capacity_in,
-        z01.time_units,
-        (select unit_value from x01_units x01 where x01.id = z01.time_units) as time_in,
-        z01a.scenario_id as origin_id,
-        (select count(*) from a01b_container_nodes a01 where a01.scenario_id = z01.scenario_id and a01.region_id = z01.region_id) as container_nodes,
+        (
+        	(select count(*) from a01a_generator_nodes a01 where a01.scenario_id = z01.scenario_id and a01.region_id = z01.region_id) +
+        	(select count(*) from a01b_container_nodes a01 where a01.scenario_id = z01.scenario_id and a01.region_id = z01.region_id)
+        )as container_nodes,
         (select count(*) from a01c_consumer_nodes a01 where a01.scenario_id = z01.scenario_id and a01.region_id = z01.region_id) as consumer_nodes,
-        (select count(*) from a02_flows a02 where a02.scenario_id = z01.scenario_id and a02.region_id = z01.region_id) as flows, 
-        (select sum(current_flow) from a02_flows a02 where a02.scenario_id = z01.scenario_id and a02.region_id = z01.region_id and origin_type = 1 ) as system_inputs,
-        (select sum(current_flow) from a02_flows a02 where a02.scenario_id = z01.scenario_id and a02.region_id = z01.region_id and origin_type = 3 ) as system_outpus,
-        z01.recalc_trl, 
-        z01.recalc_solution
+        (select count(*) from a02_flows a02 where a02.scenario_id = z01.scenario_id and a02.region_id = z01.region_id) as flows,
+        2 AS warnings, -- hardcoded for now,
+        (
+        	select (sum(a01.current_vol)/sum(max_capacity))*100 from a01b_container_nodes a01 where a01.scenario_id = z01.scenario_id and a01.region_id = z01.region_id
+        ) as current_vol,
+        x01_c.unit_value as capacity_units,
+        x01_t.unit_value as time_units,
+        z02.state as system_state,
+        z02.risk_node,
+        z02.critical_time 
     FROM z01_scenarios z01 
     left join z01_scenarios z01a on z01a.scenario_id = z01.origin_id and z01a.region_id = z01.region_id
+    join z02_current_condition_summary z02 on z02.scenario_id = z01.scenario_id and z02.region_id = z01.region_id
+    join x01_units x01_c on x01_c.id = z01.capacity_units
+    join x01_units x01_t on x01_t.id = z01.time_units
     where z01.scenario_id = ? and z01.region_id = ?
     order by z01.cdate asc
 `;
 
-
-let scenarioMapQuery = `
+const nodesSummaryQuery = `
     select 
-        a01b.node_id,
-        a01b.description,
-        a01b.Lat,
-        a01b.\`Long\` 
-    from a01b_container_nodes a01b 
-    where a01b.scenario_id = ? and a01b.region_id = ?
+      z03.node_id,
+      z03.min_vol,
+      z03.current_vol,
+      z03.max_vol,
+      CASE 
+      	when z03.incoming_flow = z03.outcoming_flow then 'Stable'
+      	when z03.incoming_flow > z03.outcoming_flow then 'Filling'
+      	when z03.incoming_flow < z03.outcoming_flow then 'Draining'
+      END as node_state,      
+      z03.time_to_reach_limit
+    from z03_current_state_detail z03
+    where z03.scenario_id = ? and z03.region_id = ?
 `
 
 
@@ -76,15 +85,14 @@ async function getScenarioSumary(scenarioId,region_id){
 }
 
 /**
- * This method obtains a scenario nodes for map rendering
- * 
- * @param {String} scenarioId The scenario Id
- * @param {String} region_id The users region
- * @returns the scenario object
+ * Method that obtains the nodes summary for a specific scenario.
+ * @param {*} scenarioId 
+ * @param {*} region_id 
+ * @returns 
  */
-async function getScenarioMap(scenarioId,region_id){
+async function getScenarioNodesSummary(scenarioId,region_id){
     try{
-        let query = scenarioMapQuery;
+        let query = nodesSummaryQuery
         let params = [scenarioId,region_id]
         let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
@@ -137,36 +145,4 @@ async function cloneScenario(scenarioId,description,baseId,region_id){
     }
 }
 
-/**
- * Service that obtains the scenario's capacity unit
- * 
- * @returns a list of available scenarios in the Database.
- */
-async function getScenarioCapacityUnits(region_id,scenario_id){
-    try{
-        let query = "SELECT unit_value from x01_units where id = (select capacity_units from z01_scenarios where region_id = ? and scenario_id = ?)";
-        let params = [region_id,scenario_id]
-        let qResult = await dataSource.getDataWithParams(query,params);
-        return qResult;
-    }catch(err){
-        return new dataSource.QueryResult(false,null,0,0,err);
-    }
-}
-
-/**
- * Service that obtains the scenario's time unit
- * 
- * @returns a list of available scenarios in the Database.
- */
-async function getScenarioTimeUnits(region_id,scenario_id){
-    try{
-        let query = "SELECT unit_value from x01_units where id = (select time_units from z01_scenarios where region_id = ? and scenario_id = ?)";
-        let params = [region_id,scenario_id]
-        let qResult = await dataSource.getDataWithParams(query,params);
-        return qResult;
-    }catch(err){
-        return new dataSource.QueryResult(false,null,0,0,err);
-    }
-}
-
-module.exports = {getScenariosList, getScenarioSumary, getScenarioMap,cloneScenario, deleteScenario,getScenarioCapacityUnits,getScenarioTimeUnits};
+module.exports = {getScenariosList, getScenarioSumary,cloneScenario, deleteScenario,getScenarioNodesSummary};

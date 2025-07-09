@@ -17,6 +17,7 @@
 const dataSource = require('../Datasource/MySQLMngr');
 const bcrypt = require('bcrypt');
 
+//left join to u01 as admin users can't be assigned to a region.
 const userQquery = 
 `   SELECT 
         u03.username,
