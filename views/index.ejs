@@ -146,6 +146,19 @@
         $('#newModal').removeClass('is-active');
       });
       handleScenarioClick('<%=base_scenario%>');
+
+      // Handle tab switching
+    $('#stateTabs li').on('click', function () {
+        const tab = $(this).data('tab');
+
+        // Toggle tab highlight
+        $('#stateTabs li').removeClass('is-active');
+        $(this).addClass('is-active');
+
+        // Show/hide tab content
+        $('#tab-current, #tab-solution').hide();
+        $(`#tab-${tab}`).show();
+      });
       showAlertModal("Test Alert Modal", "Testing Alert Modal 101.");
     });
 
@@ -157,6 +170,12 @@
       selectedScenario = scenarioId;
       $('#sidebar-list a').removeClass('is-selected');
       $(`#sidebar-list a[data-id="${scenarioId}"]`).addClass('is-selected');
+
+      // Reset tab view to "Current State"
+      $('#stateTabs li').removeClass('is-active');
+      $('#stateTabs li[data-tab="current"]').addClass('is-active');
+      $('#tab-current').show();
+      $('#tab-solution').hide();
 
       // AJAX POST call
       $.ajax({
@@ -300,6 +319,8 @@
     function closeAlertModal() {
       document.getElementById("alertModal").classList.remove("is-active");
     }
+
+    
   </script>
 </head>
 
@@ -409,9 +430,29 @@
       </div>
     </div>
 
+    <!-- Tabs to switch between views -->
     <h2 class="subtitle has-text-weight-bold">Current State Details <a>View Details</a></h2>
 
-    <div id="scenario-content">
+    <div class="tabs is-toggle is-small mb-4" id="stateTabs">
+      <ul>
+        <li class="is-active" data-tab="current">
+          <a>
+            <span class="icon is-small"><i class="fas fa-chart-area"></i></span>
+            <span>Current State</span>
+          </a>
+        </li>
+        <li data-tab="solution">
+          <a>
+            <span class="icon is-small"><i class="fas fa-lightbulb"></i></span>
+            <span>Proposed Solution</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+
+
+    <div id="tab-current">
       <div class="columns">
         <!-- DONUT CHART-->
         <div class="column is-half">
@@ -431,6 +472,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Tab Content: Proposed Solution -->
+    <div id="tab-solution" style="display: none;">
+      <div class="box has-text-centered">
+        <p class="subtitle is-6 has-text-grey">No proposed solution available yet.</p>
+      </div>
+    </div>
+
   </main>
 
 </body>

@@ -38,7 +38,7 @@ async function getScenarioSumary(req,res){
         let session = await utilities.getSessionInfo(req);
         let scenarioId = req.params.scenarioId;
         let regionId = session.region_id;
-        const scenarioSumary = await scenarioService.getScenarioSumary(scenarioId,regionId);
+        const scenarioSumary = await scenarioService.getScenarioSumary(scenarioId,regionId); //What to do if it's empty?
         const scenarioNodes = await scenarioService.getScenarioNodesSummary(scenarioId,regionId);
         res.status(200);
         res.json({
