@@ -1,0 +1,53 @@
+<!-- Modal -->
+<div class="modal" id="newModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create New Scenario</p>
+        <button class="delete" aria-label="close" id="closeModalBtn"></button>
+      </header>
+
+      <section class="modal-card-body">
+        <form id="scenarioForm">
+          <!-- Scenario Name -->
+          <div class="field">
+            <label class="label">Scenario Name <span class="has-text-danger">*</span></label>
+            <div class="control">
+              <input class="input" type="text" id="scenarioName" placeholder="Enter scenario name" required>
+            </div>
+            <p class="help is-danger" id="scenarioNameError" style="display: none;">Scenario name is required.</p>
+          </div>
+
+          <!-- Description -->
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <textarea class="textarea" id="scenarioDescription" placeholder="Optional description" rows="3"
+                style="resize: none;"></textarea>
+            </div>
+          </div>
+
+          <!-- Base Scenario -->
+          <div class="field">
+            <label class="label">Base Scenario</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="baseScenarioSelect">
+                  <option value="">Empty Scenario - File Upload - Not yet implemented</option>
+                  <%for(let i = 0; i< scenarios.length;i++) {%>
+                    <option value="<%=scenarios[i].scenario_id%>"><%=scenarios[i].description%></option>
+                  <%}%>
+                  <!-- More options can be dynamically populated -->
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <footer class="modal-card-foot is-justify-content-flex-end">
+        <button class="button is-primary" id="submitScenarioBtn">Create</button>
+        <button class="button" id="closeModalFooter">Cancel</button>
+      </footer>
+    </div>
+</div>

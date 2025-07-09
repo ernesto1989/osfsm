@@ -89,6 +89,12 @@
       $('#deleteScenario').on('click', function () {
         if (!selectedScenario) return;
         // Set the modal content
+
+        if(selectedScenario == '<%=base_scenario%>') {
+          showAlertModal("Cannot Delete This One!", "You can't delete the Region's official condition ⚠️");
+          return;
+        }
+
         $('#scenarioToDelete').text(selectedScenario);
         $('#deleteConfirmModal').addClass('is-active');
       });
@@ -140,6 +146,7 @@
         $('#newModal').removeClass('is-active');
       });
       handleScenarioClick('<%=base_scenario%>');
+      showAlertModal("Test Alert Modal", "Testing Alert Modal 101.");
     });
 
     function toggleTheme() {
@@ -283,7 +290,15 @@
       alert(`Opening ${selectedScenario} current state analysis`);
     }
 
-    
+    function showAlertModal(title, message) {
+      document.getElementById("alertModalTitle").textContent = title;
+      document.getElementById("alertModalMessage").textContent = message;
+      document.getElementById("alertModal").classList.add("is-active");
+    }
+
+    function closeAlertModal() {
+      document.getElementById("alertModal").classList.remove("is-active");
+    }
   </script>
 </head>
 
@@ -320,76 +335,11 @@
     </div>
   </nav>
 
-  <!-- Modal -->
-  <div class="modal" id="newModal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Create New Scenario</p>
-        <button class="delete" aria-label="close" id="closeModalBtn"></button>
-      </header>
+  <%- include('partials/newScenario') %>
 
-      <section class="modal-card-body">
-        <form id="scenarioForm">
-          <!-- Scenario Name -->
-          <div class="field">
-            <label class="label">Scenario Name <span class="has-text-danger">*</span></label>
-            <div class="control">
-              <input class="input" type="text" id="scenarioName" placeholder="Enter scenario name" required>
-            </div>
-            <p class="help is-danger" id="scenarioNameError" style="display: none;">Scenario name is required.</p>
-          </div>
-
-          <!-- Description -->
-          <div class="field">
-            <label class="label">Description</label>
-            <div class="control">
-              <textarea class="textarea" id="scenarioDescription" placeholder="Optional description" rows="3"
-                style="resize: none;"></textarea>
-            </div>
-          </div>
-
-          <!-- Base Scenario -->
-          <div class="field">
-            <label class="label">Base Scenario</label>
-            <div class="control">
-              <div class="select is-fullwidth">
-                <select id="baseScenarioSelect">
-                  <option value="">Empty Scenario - File Upload - Not yet implemented</option>
-                  <option value="scenario1">Scenario 1</option>
-                  <option value="scenario2">Scenario 2</option>
-                  <!-- More options can be dynamically populated -->
-                </select>
-              </div>
-            </div>
-          </div>
-        </form>
-      </section>
-
-      <footer class="modal-card-foot is-justify-content-flex-end">
-        <button class="button is-primary" id="submitScenarioBtn">Create</button>
-        <button class="button" id="closeModalFooter">Cancel</button>
-      </footer>
-    </div>
-  </div>
-
-  <!-- Delete Confirmation Modal -->
-  <div class="modal" id="deleteConfirmModal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Delete Scenario</p>
-        <button class="delete" aria-label="close" id="cancelDeleteBtn"></button>
-      </header>
-      <section class="modal-card-body">
-        <p>Are you sure you want to delete the scenario: <strong id="scenarioToDelete"></strong>?</p>
-      </section>
-      <footer class="modal-card-foot is-justify-content-flex-end">
-        <button class="button" id="cancelDeleteFooter">Cancel</button>
-        <button class="button is-danger" id="confirmDeleteBtn">Delete</button>
-      </footer>
-    </div>
-  </div>
+  <%- include('partials/deleteScenario') %>
+  
+  <%- include('partials/customAlertModal') %>
 
   <!-- Sidebar -->
   <aside id="sidebar">
