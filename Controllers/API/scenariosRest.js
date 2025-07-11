@@ -65,15 +65,6 @@ async function getScenarioSumary(req,res){
  */
 async function createScenario(req,res){
     try{
-        if (!req.session.isLoggedIn) {
-            let jsonError = {
-                "status"  : "Unauthorized",
-                "message" : "Need to login"
-            };
-            res.status(401);
-            res.send(jsonError);
-            return;
-        }
         let session = await utilities.getSessionInfo(req);
         let scenario = req.body;
         let type = scenario.type;
@@ -122,15 +113,6 @@ async function createScenario(req,res){
  */
 async function deleteScenario(req,res){
     try{
-        if (!req.session.isLoggedIn) {
-            let jsonError = {
-                "status"  : "Unauthorized",
-                "message" : "Need to login"
-            };
-            res.status(401);
-            res.send(jsonError);
-            return;
-        }
         let session = await utilities.getSessionInfo(req);
         let scenario = req.body;
         let scenarioId = scenario.scenario_id;

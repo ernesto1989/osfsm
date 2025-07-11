@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="./css/bulma-theme.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/w2ui@1.5.rc1/w2ui.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bulma-toast@2.4.2/dist/bulma-toast.min.js"></script>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
@@ -118,12 +119,38 @@
 
       // Confirm deletion
       $('#confirmDeleteBtn').on('click', function () {
-        $(`#sidebar-list a[data-id="${selectedScenario}"]`).parent().remove();
-        $('#deleteConfirmModal').removeClass('is-active');
+        if (!selectedScenario) return;
 
-        selectedScenario = '';
-        $('#selected_scenario').text("No scenario selected");
-        $('#donut-chart, #bar-chart').empty();
+        // Send DELETE request to API
+        $.ajax({
+          url: '<%=home_url%>/api/deleteScenario',     // ⬅️ Adjust this to your actual endpoint
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ scenario_id: selectedScenario }),
+          success: function (response) {
+            // On success: remove item from UI
+            $(`#sidebar-list a[data-id="${selectedScenario}"]`).parent().remove();
+            $('#deleteConfirmModal').removeClass('is-active');
+
+            bulmaToast.toast({
+              message: `Scenario "${selectedScenario}" deleted successfully`,
+              type: "is-success",
+              duration: 3000,
+              position: "top-right",
+              dismissible: true,
+              pauseOnHover: true
+            });
+
+            selectedScenario = '';
+            $('#selected_scenario').text("No scenario selected");
+            $('#donut-chart, #bar-chart').empty();
+            handleScenarioClick('<%= base_scenario %>'); // Reset to base scenario
+          },
+          error: function (xhr, status, error) {
+            console.error('Error deleting scenario:', error);
+            // Optionally, show an alert modal
+          }
+        });
       });
 
       $('#submitScenarioBtn').on('click', function () {
@@ -148,18 +175,18 @@
       handleScenarioClick('<%=base_scenario%>');
 
       // Handle tab switching
-    $('#stateTabs li').on('click', function () {
-        const tab = $(this).data('tab');
+      $('#stateTabs li').on('click', function () {
+          const tab = $(this).data('tab');
 
-        // Toggle tab highlight
-        $('#stateTabs li').removeClass('is-active');
-        $(this).addClass('is-active');
+          // Toggle tab highlight
+          $('#stateTabs li').removeClass('is-active');
+          $(this).addClass('is-active');
 
-        // Show/hide tab content
-        $('#tab-current, #tab-solution').hide();
-        $(`#tab-${tab}`).show();
-      });
-      showAlertModal("Test Alert Modal", "Testing Alert Modal 101.");
+          // Show/hide tab content
+          $('#tab-current, #tab-solution').hide();
+          $(`#tab-${tab}`).show();
+        });
+      //showAlertModal("Test Alert Modal", "Testing Alert Modal 101.");
     });
 
     function toggleTheme() {
@@ -262,6 +289,9 @@
           height: 200,
           stacked: false,
           toolbar: { show: false }
+        },
+        dataLabels: {
+          enabled: false,
         },
         series: [
           { name: `Min Vol (${capacity_units})`, data: mins },
