@@ -1,53 +1,94 @@
 <!-- Modal -->
 <div class="modal" id="newModal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Create New Scenario</p>
-        <button class="delete" aria-label="close" id="closeModalBtn"></button>
-      </header>
+  <div class="modal-background"></div>
+  <div class="modal-card is-wider" style="max-height: 90vh; overflow-y: auto;">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Create New Scenario</p>
+      <button class="delete" aria-label="close" id="closeModalBtn"></button>
+    </header>
 
-      <section class="modal-card-body">
-        <form id="scenarioForm">
-          <!-- Scenario Name -->
-          <div class="field">
-            <label class="label">Scenario Name <span class="has-text-danger">*</span></label>
-            <div class="control">
-              <input class="input" type="text" id="scenarioName" placeholder="Enter scenario name" required>
-            </div>
-            <p class="help is-danger" id="scenarioNameError" style="display: none;">Scenario name is required.</p>
+    <section class="modal-card-body">
+      <form id="scenarioForm">
+        <!-- Scenario Name -->
+        <div class="field">
+          <label class="label">Scenario Name <span class="has-text-danger">*</span></label>
+          <div class="control">
+            <input class="input" type="text" id="scenarioName" placeholder="Enter scenario name" required>
           </div>
+          <p class="help is-danger" id="scenarioNameError" style="display: none;">Scenario name is required.</p>
+        </div>
 
-          <!-- Description -->
-          <div class="field">
-            <label class="label">Description</label>
-            <div class="control">
-              <textarea class="textarea" id="scenarioDescription" placeholder="Optional description" rows="3"
-                style="resize: none;"></textarea>
-            </div>
+        <!-- Description -->
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <textarea class="textarea" id="scenarioDescription" placeholder="Optional description" rows="3"
+              style="resize: none;"></textarea>
           </div>
+        </div>
 
-          <!-- Base Scenario -->
-          <div class="field">
-            <label class="label">Base Scenario</label>
-            <div class="control">
-              <div class="select is-fullwidth">
-                <select id="baseScenarioSelect">
-                  <option value="">Empty Scenario - File Upload - Not yet implemented</option>
-                  <%for(let i = 0; i< scenarios.length;i++) {%>
-                    <option value="<%=scenarios[i].scenario_id%>"><%=scenarios[i].description%></option>
+        <!-- Base Scenario -->
+        <div class="field">
+          <label class="label">Base Scenario</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select id="baseScenarioSelect">
+                
+                <%for(let i=0; i< scenarios.length;i++) {%>
+                  <option value="<%=scenarios[i].scenario_id%>">
+                    <%=scenarios[i].description%>
+                  </option>
                   <%}%>
-                  <!-- More options can be dynamically populated -->
-                </select>
+                  <option value="">Empty Scenario - File Upload - Not yet implemented</option>
+                    <!-- More options can be dynamically populated -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Units Selection -->
+        <div class="field is-horizontal" id="unitSelectors">
+          <!-- Capacity Units -->
+          <div class="field-body">
+            <div class="field">
+              <label class="label ">Capacity Unit</label>
+              <div class="control">
+                <div class="select ">
+                  <select id="capacityUnitSelect">
+                    <% for(let i=0; i < capacity_units.length; i++) { %>
+                      <option value="<%= capacity_units[i] %>">
+                        <%= capacity_units[i] %>
+                      </option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time Units -->
+            <div class="field ml-4">
+              <label class="label ">Time Unit</label>
+              <div class="control">
+                <div class="select ">
+                  <select id="timeUnitSelect">
+                    <% for(let i=0; i < time_units.length; i++) { %>
+                      <option value="<%= time_units[i] %>">
+                        <%= time_units[i] %>
+                      </option>
+                      <% } %>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-        </form>
-      </section>
+        </div>
 
-      <footer class="modal-card-foot is-justify-content-flex-end">
-        <button class="button is-primary" id="submitScenarioBtn">Create</button>
-        <button class="button" id="closeModalFooter">Cancel</button>
-      </footer>
-    </div>
+      </form>
+    </section>
+
+    <footer class="modal-card-foot is-justify-content-flex-end">
+      <button class="button is-primary" id="submitScenarioBtn">Create</button>
+      <button class="button" id="closeModalFooter">Cancel</button>
+    </footer>
+  </div>
 </div>

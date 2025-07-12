@@ -58,7 +58,7 @@ const nodesSummaryQuery = `
  */
 async function getScenariosList(region_id){
     try{
-        let query = "SELECT scenario_id,description from z01_scenarios where region_id = ?";
+        let query = "SELECT scenario_id,scenario_name,description from z01_scenarios where region_id = ?";
         let params = [region_id]
         let qResult = await dataSource.getDataWithParams(query,params);
         return qResult;
@@ -108,14 +108,17 @@ async function getScenarioNodesSummary(scenarioId,region_id){
  * @param {*} region_id user's region
  * @returns 
  */
-async function cloneScenario(scenarioId,description,baseId,region_id){
+async function cloneScenario(scenarioName,description,baseId,region_id){
     try{
-        let query = 'call create_scenario(?,?,?,?)';
-        let params = [scenarioId,description,baseId,region_id]
-        let qResult = await dataSource.getDataWithParams(query,params);
-        let status = qResult.rows[0][0].STATUS;
-        if(status == 'OK'){
-            return new dataSource.QueryResult(true,1,0,0,'');
+        let query = 'call create_scenario(?,?,?,?,@scenarioId)';
+        let params = [scenarioName,description,baseId,region_id];
+
+        let qResult = await dataSource.callProcedure(query,params); //is this correct? how do I get the error
+        let resultSet = qResult.rows[0][0];
+        
+        if(resultSet.STATUS == 'OK'){
+            const newScenarioId = resultSet.scenario_id;
+            return new dataSource.QueryResult(true,1,newScenarioId,0,'');
         }else{
             return new dataSource.QueryResult(false,null,0,0,err);
         }

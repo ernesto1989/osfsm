@@ -2,20 +2,44 @@
 -- Receives the scenario id, the description and the base scenario.
 -- Currently only supports TYPE 1 Scenarios -> scenarios that descend from another scenario.
 -- 
-CREATE PROCEDURE osfdb.create_scenario(
-	in scenarioId varchar(30),in descrp varchar(100),in baseScenarioId varchar(30),in regionId int)
+CREATE DEFINER=`ecv`@`%` PROCEDURE `osfdb`.`create_scenario`(
+	in scenarioName varchar(30),in descrp varchar(100),in baseScenarioId varchar(30),in regionId int, out scenarioId varchar(30))
 BEGIN
+	
+	DECLARE v_date_part VARCHAR(6);
+    DECLARE v_region_part VARCHAR(3);
+    DECLARE v_sequence INT;
+    DECLARE v_sequence_part VARCHAR(2);
+   
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
 		ROLLBACK;
 		SELECT 'NOT OK' AS STATUS,'ERROR OCCOURED!' as ERROR;
 	END;
 	START TRANSACTION;
+
+   
+   SET v_date_part = DATE_FORMAT(CURDATE(), '%y%m%d');
+   SET v_region_part = CONCAT('r', LPAD(regionId, 2, '0'));
+  
+  SELECT
+        COUNT(*) + 1
+    INTO
+        v_sequence
+    FROM
+        z01_scenarios
+    WHERE
+        scenario_id LIKE CONCAT('esc_', v_date_part, '_', v_region_part, '_%') and region_id = regionId and
+        scenario_id not in ('BASE_CONDITION');
+       
+    SET v_sequence_part = LPAD(v_sequence, 2, '0');
+   
+   set scenarioId = CONCAT('esc_', v_date_part, '_', v_region_part, '_', v_sequence_part);
 	
 	-- type = 1 means that is cloning scenario. currently not supporting other types of scenarios.
-	INSERT INTO z01_scenarios(scenario_id, region_id, cdate, description, `type`, capacity_units, time_units, origin_id, recalc_trl, recalc_solution, update_date)
+	INSERT INTO z01_scenarios(scenario_id,scenario_name ,region_id, cdate, description, `type`, capacity_units, time_units, origin_id, recalc_trl, recalc_solution, update_date)
 	SELECT 
-		scenarioId, regionId, cdate, descrp, 1, capacity_units, time_units, baseScenarioId, 1, 1, update_date
+		scenarioId, scenarioName,regionId, cdate, descrp, 1, capacity_units, time_units, baseScenarioId, 1, 1, update_date
 	FROM z01_scenarios WHERE scenario_id = baseScenarioId AND region_id = regionId;
 
 	INSERT INTO a01a_generator_nodes(region_id, scenario_id, node_id, node_type, description)
@@ -38,5 +62,5 @@ BEGIN
 	FROM a02_flows WHERE scenario_id = baseScenarioId AND region_id = regionId;
 	
 	COMMIT;
-	SELECT 'OK' AS STATUS,'' as ERROR;
+	SELECT 'OK' AS STATUS,scenarioId AS scenario_id,'' as ERROR;
 END

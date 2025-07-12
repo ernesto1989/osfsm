@@ -144,13 +144,13 @@ async function bulkInsertData(query,elements){
       conn = await pool.getConnection();
       await conn.beginTransaction();
       const [data,fields] = await conn.query(query,[elements]);
-      await conn.release();
-      conn.commit();  
+      await conn.commit();
+      conn.release();  
       return new QueryResult(true,data,data.insertId,data.affectedRows,'');
   } catch(error){
     console.log(error);
     if(conn)  
-      conn.rollback();
+      try { await conn.rollback(); } catch (e) { console.error("Rollback failed:", e); }
     return new QueryResult(false,null,0,0,error); 
   } finally {
     if (conn)
@@ -185,6 +185,27 @@ async function updateData(query,params){
   }
 }
 
+/**
+ * Method that calls a stored procedure with the given query and params.
+ * 
+ * @param {String} query The stored procedure query
+ * @param {Array} params The parameters for the stored procedure
+ * @returns {Object} A Query Result object
+ */
+async function callProcedure(query, params) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const [rows] = await conn.query(query, params);
+    return new QueryResult(true, rows, 0, 0, '');
+  } catch (error) {
+    console.error(error);
+    return new QueryResult(false, null, 0, 0, error);
+  } finally {
+    if (conn) conn.release();
+  }
+}
 
 
-  module.exports = {QueryResult,getData,getDataWithParams,insertData,bulkInsertData,updateData}
+
+  module.exports = {QueryResult,getData,getDataWithParams,insertData,bulkInsertData,updateData, callProcedure}

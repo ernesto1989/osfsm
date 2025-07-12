@@ -68,19 +68,21 @@ async function createScenario(req,res){
         let session = await utilities.getSessionInfo(req);
         let scenario = req.body;
         let type = scenario.type;
-        let scenarioId = scenario.scenario_id;
+        let scenarioName = scenario.scenario_name;
         let desc = scenario.description;
-        let originId = scenario.base_scenario_id;
+        let originId = scenario.origin_id;
         let regionId = session.region_id;
         
         if(type == 1){
             //clone
-            const cloning = await scenarioService.cloneScenario(scenarioId,desc,originId,regionId);
+            //need currento conditions!!!!
+            const cloning = await scenarioService.cloneScenario(scenarioName,desc,originId,regionId);
             if(cloning.getStatus()){
                 res.status(200);
                 res.json({
                     "status"  : "success",
-                    "total"   : cloning.getChanges()
+                    "total"   : cloning.getChanges(),
+                    "gen_id" : cloning.getGenId(),
                 });
                 return;
             }else{
@@ -123,7 +125,8 @@ async function deleteScenario(req,res){
             res.status(200);
             res.json({
                 "status"  : "success",
-                "total"   : 1
+                "total"   : 1,
+                "scenario_id":scenarioId
             });
             return;
         }else{

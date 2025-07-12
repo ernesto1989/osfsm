@@ -46,10 +46,10 @@ async function loadLists(){
     let tu = (await catalogsService.getTimeUnits()).getRows();
 
     for(let i=0;i<cu.length;i++)
-        capacity_units.push(cu[i].unit_name);
+        capacity_units.push(cu[i].unit_value);
 
     for(let i=0;i<tu.length;i++)
-        time_units.push(tu[i].unit_name);
+        time_units.push(tu[i].unit_value);
     
     for(let i = 0;i<flowTypes;i++)
         flow_types.push(flowTypes[i].type)

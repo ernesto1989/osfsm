@@ -151,3 +151,34 @@ body {
     /* expand width */
     margin: auto;
 }
+
+.modal-card {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+  
+.modal-card-body {
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+/* Only enlarge the Create Scenario modal */
+#newModal .modal-card {
+    max-height: 90vh; /* You can increase or decrease this */
+}
+
+#newModal .modal-card-body {
+    max-height: 90vh;   /* Adjust as needed */
+    overflow-y: auto;   /* Still scrollable if necessary */
+}
+.modal-card.is-wider {
+    max-height: 90vh; /* Set maximum height to 90% of the viewport height */
+    width: 50vw; /* Set width to 50% of the viewport width */
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+}
+
+.modal-card-body {
+    height: auto; /* Adjust body height dynamically */
+    padding: 1rem; /* Add consistent padding */
+}
